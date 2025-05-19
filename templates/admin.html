@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - Metro Railway</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --accent: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --danger: #ef233c;
+      --info: #4895ef;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background-color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #top-bar {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    #top-bar img {
+      height: 40px;
+      margin-right: 1rem;
+      filter: brightness(0) invert(1);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 68px;
+      z-index: 99;
+      overflow-x: auto;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .primary-btn {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .primary-btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+    }
+
+    .danger-btn {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .danger-btn:hover {
+      background-color: #d90429;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(239, 35, 60, 0.2);
+    }
+
+    .section {
+      display: none;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.4rem;
+      font-weight: 700;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    /* Search Bar Styles */
+    .search-container {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      background: var(--light);
+      padding: 1rem;
+      border-radius: var(--radius);
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.75rem 1.25rem;
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: var(--transition);
+      background-color: white;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .search-btn {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .search-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .clear-btn {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--light-gray);
+      color: var(--gray);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .clear-btn:hover {
+      background-color: #dee2e6;
+    }
+
+    /* User List Styles */
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .user-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      transition: var(--transition);
+      border-left: 4px solid var(--info);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .user-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-field {
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .user-field strong {
+      color: var(--gray);
+      font-weight: 500;
+      min-width: 80px;
+    }
+
+    .user-field span {
+      font-weight: 500;
+      word-break: break-all;
+    }
+
+    /* Booking List Styles */
+    .booking-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .booking-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.75rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      position: relative;
+      transition: var(--transition);
+      border-left: 4px solid var(--success);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .booking-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .booking-field {
+      margin-bottom: 0.75rem;
+    }
+
+    .booking-field strong {
+      display: block;
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .booking-field span {
+      font-weight: 600;
+      display: inline-block;
+      word-break: break-word;
+      color: var(--dark);
+    }
+
+    .booking-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 10%;
+      object-fit: cover;
+      border: 3px solid var(--light-gray);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .booking-image:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .booking-actions {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .success-badge {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .danger-badge {
+      background-color: rgba(239, 35, 60, 0.1);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    /* Face Verification Styles */
+    .face-verification-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .video-container {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      width: 100%;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    #video {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+    }
+
+    .verification-result {
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--shadow);
+      width: 100%;
+      font-size: 1.1rem;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .success-result {
+      background-color: rgba(76, 201, 240, 0.1);
+      border-left: 4px solid var(--success);
+    }
+
+    .error-result {
+      background-color: rgba(239, 35, 60, 0.1);
+      border-left: 4px solid var(--danger);
+    }
+
+    /* Confirmation Dialog */
+    .confirmation-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .confirmation-dialog.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .dialog-content {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: translateY(20px);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .confirmation-dialog.active .dialog-content {
+      transform: translateY(0);
+    }
+
+    .dialog-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+    }
+
+    .dialog-message {
+      margin-bottom: 1.5rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .dialog-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      overflow: auto;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      display: block;
+      max-width: 90%;
+      max-height: 90%;
+      margin: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      animation: zoomIn 0.3s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1024px) {
+      .booking-card {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-buttons {
+        flex-wrap: wrap;
+      }
+      
+      .booking-card {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .booking-actions {
+        position: static;
+        grid-column: span 2;
+        margin-top: 1rem;
+      }
+
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-input,
+      .search-btn,
+      .clear-btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section {
+        padding: 1.5rem 1rem;
+      }
+
+      .booking-card {
+        grid-template-columns: 1fr;
+      }
+      
+      .booking-actions {
+        grid-column: span 1;
+      }
+
+      .card h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* No Data Message */
+    .nodata {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray);
+      font-size: 1.1rem;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Toast Notification */
+    .toast-notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 10000;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-notification.success {
+      border-left: 4px solid var(--success);
+    }
+    .toast-notification.error {
+      border-left: 4px solid var(--danger);
+    }
+    .toast-notification .toast-icon {
+      font-size: 1.5rem;
+    }
+    .toast-notification.success .toast-icon {
+      color: var(--success);
+    }
+    .toast-notification.error .toast-icon {
+      color: var(--danger);
+    }
+    .toast-message {
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <!-- Confirmation Dialog -->
+  <div class="confirmation-dialog" id="confirmationDialog">
+    <div class="dialog-content">
+      <div class="dialog-title">
+        <i class="fas fa-exclamation-circle" style="color: var(--accent);"></i>
+        <span id="dialogTitle">Confirm Action</span>
+      </div>
+      <div class="dialog-message" id="dialogMessage">
+        Are you sure you want to perform this action?
+      </div>
+      <div class="dialog-buttons">
+        <button class="clear-btn" onclick="hideConfirmation()">Cancel</button>
+        <button class="danger-btn" id="confirmActionBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="top-bar">
+    <div class="logo-container">
+      <i class="fas fa-train" style="font-size: 1.8rem; color: white; margin: 10px;"></i>
+      <span>Metro Railway Admin</span>
+    </div>
+    <button class="primary-btn" onclick="window.location.href='/admin/logout'">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="primary-btn" onclick="showSection('instruction')">
+      <i class="fas fa-info-circle"></i> Instructions
+    </button>
+    <button class="primary-btn" onclick="showSection('login_details')">
+      <i class="fas fa-users"></i> User Login
+    </button>
+    <button class="primary-btn" onclick="showSection('booking_details')">
+      <i class="fas fa-ticket-alt"></i> Bookings
+    </button>
+    <button class="primary-btn" onclick="showSection('face_verification')">
+      <i class="fas fa-camera"></i> Face Verification
+    </button>
+  </div>
+
+  <div id="instruction" class="section active">
+    <div class="card">
+      <h3><i class="fas fa-info-circle"></i> Admin Dashboard Instructions</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <div>
+          <h4 style="margin-bottom: 1rem; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-users"></i> User Management
+          </h4>
+          <ul style="list-style-type: none; padding-left: 0;">
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; gap: 0.75rem;">
+              <i class="fas fa-search" style="color: var(--primary);"></i>
+              <span>Search users by username in the User Login section</span>
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; gap: 0.75rem;">
+              <i class="fas fa-trash-alt" style="color: var(--danger);"></i>
+              <span>Delete users by clicking the Delete User button</span>
+            </li>
+            <li style="padding: 0.5rem 0; display: flex; gap: 0.75rem;">
+              <i class="fas fa-sync-alt" style="color: var(--info);"></i>
+              <span>Click Clear to reset search results</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 style="margin-bottom: 1rem; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-ticket-alt"></i> Booking Management
+          </h4>
+          <ul style="list-style-type: none; padding-left: 0;">
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; gap: 0.75rem;">
+              <i class="fas fa-search" style="color: var(--primary);"></i>
+              <span>Search bookings by exact Booking ID in the Bookings section</span>
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; gap: 0.75rem;">
+              <i class="fas fa-times-circle" style="color: var(--danger);"></i>
+              <span>Cancel tickets by clicking the Cancel Ticket button</span>
+            </li>
+            <li style="padding: 0.5rem 0; display: flex; gap: 0.75rem;">
+              <i class="fas fa-image" style="color: var(--success);"></i>
+              <span>View user images associated with each booking</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 style="margin-bottom: 1rem; color: var(--secondary); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-camera"></i> Face Verification
+          </h4>
+          <ul style="list-style-type: none; padding-left: 0;">
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; gap: 0.75rem;">
+              <i class="fas fa-video" style="color: var(--primary);"></i>
+              <span>Allow camera access when prompted</span>
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid #eee; display: flex; gap: 0.75rem;">
+              <i class="fas fa-check-circle" style="color: var(--success);"></i>
+              <span>Click Verify Face to capture and compare</span>
+            </li>
+            <li style="padding: 0.5rem 0; display: flex; gap: 0.75rem;">
+              <i class="fas fa-lightbulb" style="color: var(--warning);"></i>
+              <span>Ensure proper lighting for accurate verification</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="login_details" class="section">
+    <div class="card">
+      <h3><i class="fas fa-users"></i> User Login Details</h3>
+      <div class="search-container">
+        <input type="text" id="user-search" class="search-input" placeholder="Search by username...">
+        <button class="search-btn" onclick="searchUsers()">
+          <i class="fas fa-search"></i> Search
+        </button>
+        <button class="clear-btn" onclick="clearUserSearch()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+      <div id="user-nodata" class="nodata"></div>
+      <div class="user-grid" id="user-table-body"></div>
+    </div>
+  </div>
+
+  <div id="booking_details" class="section">
+    <div class="card">
+      <h3><i class="fas fa-ticket-alt"></i> Booking Details</h3>
+      <div class="search-container">
+        <input type="text" id="booking-search" class="search-input" placeholder="Search by exact Booking ID...">
+        <button class="search-btn" onclick="searchBookings()">
+          <i class="fas fa-search"></i> Search
+        </button>
+        <button class="clear-btn" onclick="clearBookingSearch()">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+      <div id="booking-nodata" class="nodata"></div>
+      <div class="booking-container" id="booking-table-body"></div>
+    </div>
+  </div>
+
+  <div id="face_verification" class="section">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-camera"></i> Face Verification
+        </h3>
+        <h5 style="margin: 0;">
+          Location : 
+          <select name="location" id="location" style="
+          border: none;
+          background: transparent;
+          appearance: none; /* Removes default arrow */
+          -webkit-appearance: none; /* For Safari */
+          -moz-appearance: none; /* For Firefox */
+          padding-right: 15px; /* Prevents text from touching edge */
+          cursor: pointer;
+        ">
+            <option value="">Select Station</option>
+            <option value="Central Metro">Central Metro</option>
+            <option value="Thousand Light Metro">Thousand Light Metro</option>
+            <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+            <option value="Airport Metro">Airport Metro</option>
+            <option value="Saidepet Metro">Saidepet Metro</option>
+            <option value="Washermenpet Metro">Washermenpet Metro</option>
+          </select>
+        </h5>
+      </div>
+      <div class="face-verification-container">
+        <div class="video-container">
+          <video id="video" width="320" height="240" autoplay></video>
+        </div>
+        <button class="primary-btn" onclick="captureAndVerify()">
+          <i class="fas fa-camera"></i> Verify Face
+        </button>
+        <button class="danger-btn" onclick="stopCamera()">
+          <i class="fas fa-stop"></i> Stop Camera
+        </button>
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+        <div id="verification-result" class="verification-result"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="imageModal" class="modal">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+    <div id="modalCaption"></div>
+  </div>
+
+  <script>
+    // Global variables to store all users and bookings
+    let allUsers = [];
+    let allBookings = [];
+    let currentUserSearch = '';
+    let currentBookingSearch = '';
+    let currentAction = null;
+    let currentId = null;
+
+    function showSection(sectionId) {
+      // Stop camera if leaving face verification
+      if (document.querySelector('.section.active')?.id === 'face_verification') {
+        stopCamera();
+      }
+
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById(sectionId).classList.add('active');
+
+      if (sectionId === 'login_details') fetchUsers();
+      if (sectionId === 'booking_details') fetchBookings();
+      if (sectionId === 'face_verification') startCamera();
+    }
+
+    // Confirmation dialog functions
+    function showConfirmation(title, message, action, id) {
+      currentAction = action;
+      currentId = id;
+      document.getElementById('dialogTitle').textContent = title;
+      document.getElementById('dialogMessage').textContent = message;
+      document.getElementById('confirmationDialog').classList.add('active');
+    }
+
+    function hideConfirmation() {
+      document.getElementById('confirmationDialog').classList.remove('active');
+      currentAction = null;
+      currentId = null;
+    }
+
+    function confirmAction() {
+      if (currentAction === 'deleteUser') {
+        deleteUser(currentId);
+      } else if (currentAction === 'cancelBooking') {
+        cancelBooking(currentId);
+      } else if (currentAction === 'deleteBooking') {
+        deleteBooking(currentId);
+      }
+      hideConfirmation();
+    }
+
+    // Set up confirm button
+    document.getElementById('confirmActionBtn').addEventListener('click', confirmAction);
+
+    function fetchUsers() {
+      fetch('/admin/get_users')
+        .then(res => res.json())
+        .then(data => {
+          allUsers = data;
+          filterAndDisplayUsers();
+        })
+        .catch(error => {
+          console.error('Error fetching users:', error);
+          document.getElementById('user-nodata').textContent = 'Error loading user data. Please try again.';
+        });
+    }
+
+    function filterAndDisplayUsers() {
+      const container = document.getElementById('user-table-body');
+      const nodata = document.getElementById('user-nodata');
+      container.innerHTML = '';
+      
+      const filteredUsers = currentUserSearch 
+        ? allUsers.filter(user => 
+            user.username.toLowerCase().includes(currentUserSearch.toLowerCase()))
+        : allUsers;
+
+      if (filteredUsers.length > 0) {
+        nodata.textContent = '';
+        filteredUsers.forEach(user => {
+          const card = `
+            <div class="user-card">
+              <div class="user-field">
+                <strong><i class="fas fa-user"></i> Name:</strong>
+                <span>${user.username}</span>
+              </div>
+              <div class="user-field">
+                <strong><i class="fas fa-envelope"></i> Email:</strong>
+                <span>${user.email}</span>
+              </div>
+              <div class="user-field">
+                <strong><i class="fas fa-key"></i> Password:</strong>
+                <span>${user.password}</span>
+              </div>
+              <button class="danger-btn" onclick="showConfirmation('Delete User', 'Are you sure you want to delete user ${user.username}? This action cannot be undone.', 'deleteUser', ${user.id})" style="margin-top: 1rem;">
+                <i class="fas fa-trash-alt"></i> Delete User
+              </button>
+            </div>
+          `;
+          container.innerHTML += card;
+        });
+      } else {
+        nodata.textContent = currentUserSearch 
+          ? 'No users found matching your search.'
+          : 'No user records found.';
+      }
+    }
+
+    function searchUsers() {
+      currentUserSearch = document.getElementById('user-search').value;
+      filterAndDisplayUsers();
+    }
+
+    function clearUserSearch() {
+      document.getElementById('user-search').value = '';
+      currentUserSearch = '';
+      filterAndDisplayUsers();
+    }
+
+    function deleteUser(id) {
+      fetch(`/admin/delete_user/${id}`)
+        .then(() => {
+          fetchUsers();
+          showToast('User deleted successfully', 'success');
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error);
+          showToast('Failed to delete user', 'error');
+        });
+    }
+
+    function fetchBookings() {
+      fetch('/admin/get_tickets')
+        .then(res => res.json())
+        .then(data => {
+          allBookings = data;
+          filterAndDisplayBookings();
+        })
+        .catch(error => {
+          console.error('Error fetching bookings:', error);
+          document.getElementById('booking-nodata').textContent = 'Error loading booking data. Please try again.';
+        });
+    }
+
+    function filterAndDisplayBookings() {
+      const container = document.getElementById('booking-table-body');
+      const nodata = document.getElementById('booking-nodata');
+      container.innerHTML = '';
+      
+      let filteredBookings = [];
+      
+      if (currentBookingSearch) {
+        // Search for exact booking ID match first
+        const exactMatch = allBookings.find(booking => 
+          booking.id.toString() === currentBookingSearch.trim()
+        );
+        
+        if (exactMatch) {
+          filteredBookings = [exactMatch];
+        } 
+        else {
+          // If no exact match, try partial matches as fallback
+          filteredBookings = allBookings.filter(booking => 
+            booking.id.toString().includes(currentBookingSearch) ||
+            booking.username.toLowerCase().includes(currentBookingSearch.toLowerCase()) ||
+            booking.mobile.includes(currentBookingSearch))
+        }
+      } else {
+        filteredBookings = allBookings;
+      }
+
+      if (filteredBookings.length > 0) {
+        nodata.textContent = '';
+        filteredBookings.forEach(booking => {
+          const isSeasonPass = booking.type === 'season';
+          const dateField = isSeasonPass 
+            ? `<div class="booking-field">
+                 <strong><i class="fas fa-calendar-day"></i> Valid From</strong>
+                 <span>${booking.date}</span>
+               </div>
+               <div class="booking-field">
+                 <strong><i class="fas fa-calendar-day"></i> Valid To</strong>
+                 <span>${booking.end_date}</span>
+               </div>`
+            : `<div class="booking-field">
+                 <strong><i class="fas fa-calendar-day"></i> Date</strong>
+                 <span>${booking.date}</span>
+               </div>`;
+
+          const statusBadge = booking.status === 'cancelled' 
+            ? `<span class="badge danger-badge">Cancelled</span>`
+            : `<span class="badge success-badge">Active</span>`;
+
+          const card = `
+            <div class="booking-card">
+              <div class="booking-field">
+                <strong><i class="fas fa-id-badge"></i> Booking ID</strong>
+                <span>${booking.id} ${statusBadge}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-ticket-alt"></i> Type</strong>
+                <span>${isSeasonPass ? 'Season Pass' : 'Single Journey'}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-user"></i> User</strong>
+                <span>${booking.username}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-map-marker-alt"></i> From</strong>
+                <span>${booking.from_station}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-map-marker-alt"></i> To</strong>
+                <span>${booking.to_station}</span>
+              </div>
+              ${dateField}
+              <div class="booking-field">
+                <strong><i class="fas fa-calendar-day"></i> Booked On</strong>
+                <span>${booking.booking_date}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-venus-mars"></i> Gender</strong>
+                <span>${booking.gender}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-mobile-alt"></i> Mobile</strong>
+                <span>${booking.mobile}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-envelope"></i> Email</strong>
+                <span>${booking.email}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-money-bill-wave"></i> Amount</strong>
+                <span>${booking.amount}</span>
+              </div>
+              <div class="booking-field">
+                <strong><i class="fas fa-image"></i> Image</strong>
+                <img src="/static/uploads/${booking.image_path}" alt="user image" class="booking-image" onclick="openModal('/static/uploads/${booking.image_path}')">
+              </div>
+              <div class="booking-actions">
+                ${booking.status !== 'cancelled' ? `
+                <button class="danger-btn" onclick="showConfirmation('Cancel Ticket', 'Are you sure you want to cancel booking #${booking.id}?', 'cancelBooking', ${booking.id})">
+                  <i class="fas fa-times-circle"></i> Cancel Ticket
+                </button>
+                ` : `
+                <button class="danger-btn" onclick="showConfirmation('Delete Booking', 'Are you sure you want to permanently delete booking #${booking.id}? This cannot be undone.', 'deleteBooking', ${booking.id})">
+                  <i class="fas fa-trash-alt"></i> Delete Booking
+                </button>
+                `}
+              </div>
+            </div>
+          `;
+          container.innerHTML += card;
+        });
+      } else {
+        nodata.textContent = currentBookingSearch 
+          ? 'No bookings found matching your search.'
+          : 'No bookings found.';
+      }
+    }
+
+    function deleteBooking(id) {
+      fetch(`/admin/delete_ticket/${id}`, {
+        method: 'DELETE'
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(() => {
+        fetchBookings();
+        showToast('Booking deleted successfully', 'success');
+      })
+      .catch(error => {
+        console.error('Error deleting booking:', error);
+        showToast('Failed to delete booking', 'error');
+      });
+    }
+
+    function cancelBooking(id) {
+      fetch(`/admin/cancel_ticket/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.error || 'Failed to cancel ticket'); });
+        }
+        return response.json();
+      })
+      .then(() => {
+        fetchBookings();
+        showToast('Ticket cancelled successfully', 'success');
+      })
+      .catch(error => {
+        console.error('Error cancelling ticket:', error);
+        showToast(error.message || 'Failed to cancel ticket', 'error');
+      });
+    }
+
+    function searchBookings() {
+      currentBookingSearch = document.getElementById('booking-search').value;
+      filterAndDisplayBookings();
+    }
+
+    function clearBookingSearch() {
+      document.getElementById('booking-search').value = '';
+      currentBookingSearch = '';
+      filterAndDisplayBookings();
+    }
+
+    // Toast notification function
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `toast-notification ${type}`;
+      toast.innerHTML = `
+        <div class="toast-icon">
+          ${type === 'success' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>'}
+        </div>
+        <div class="toast-message">${message}</div>
+      `;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
+    }
+
+    let streamStarted = false;
+    let mediaStream = null;
+
+    function startCamera() {
+      if (!streamStarted) {
+        const video = document.getElementById('video');
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+            video.srcObject = stream;
+            streamStarted = true;
+            mediaStream = stream;
+          })
+          .catch(err => {
+            console.error("Error accessing webcam:", err);
+            showToast("Unable to access webcam. Please check permissions.", "error");
+          });
+      }
+    }
+    
+    function stopCamera() {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => {
+          track.stop();
+        });
+        const video = document.getElementById('video');
+        video.srcObject = null;
+        streamStarted = false;
+        mediaStream = null;
+      }
+    }
+
+    function captureAndVerify() {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => {
+        const formData = new FormData();
+        formData.append('image', blob, 'capture.jpg');
+
+        showToast("Verifying face...", "info");
+        
+        fetch('/admin/verify_face', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+        const resultDiv = document.getElementById('verification-result');
+
+        if (data.match && data.matched_faces && data.matched_faces.length > 0) {
+          resultDiv.className = 'verification-result success-result';
+          resultDiv.innerHTML = `<p><i class="fas fa-check-circle"></i> <strong>Verification Successful</strong></p>`;
+
+          data.matched_faces.forEach((match, index) => {
+            resultDiv.innerHTML += `
+              <div class="match-entry">
+                <p>User: <strong>${match.username}</strong></p>
+                <p>Booking ID: <strong>${match.booking_id}</strong></p>
+              </div>
+              <hr>
+            `;
+          });
+
+          showToast("Face verification successful!", "success");
+      } else {
+        resultDiv.className = 'verification-result error-result';
+        resultDiv.innerHTML = `
+          <p><i class="fas fa-times-circle"></i> <strong>Verification Failed</strong></p>
+          <p>No matching user found.</p>
+        `;
+        showToast("No matching user found", "error");
+      }
+    })
+
+        .catch(error => {
+          console.error("Verification error:", error);
+          showToast("Verification failed. Please try again.", "error");
+        });
+      }, 'image/jpeg');
+    }
+
+    // Add event listeners for Enter key in search fields
+    document.getElementById('user-search').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') searchUsers();
+    });
+
+    document.getElementById('booking-search').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') searchBookings();
+    });
+
+    function openModal(imageSrc) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      
+      modal.style.display = "flex";
+      modalImg.src = imageSrc;
+      modal.classList.add('show');
+      
+      // Close when clicking outside the image
+      modal.onclick = function(event) {
+        if (event.target === modal) {
+          closeModal();
+        }
+      };
+  
+      // Close with Escape key
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+          closeModal();
+        }
+      });
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 300);
+    }
+  </script>
+</body>
+</html>

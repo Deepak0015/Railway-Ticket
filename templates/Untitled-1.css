@@ -1,0 +1,3185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1976D2;
+            --primary-dark: #1565C0;
+            --danger-color: #d32f2f;
+            --danger-dark: #b71c1c;
+            --light-gray: #f3f4f6;
+            --dark-gray: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        .topic {
+            width: 90%;
+            max-width: 800px;
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .topic h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .topic button {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .topic button:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        /* Form */
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 8px rgba(25, 118, 210, 0.3);
+        }
+
+        /* Gender Selection */
+        .gender-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .gender-container input[type="radio"] {
+            display: none;
+        }
+
+        .gender-container label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            background-color: #fff;
+            color: #555;
+            width: 120px;
+            text-align: center;
+        }
+
+        .gender-container input[type="radio"]:checked + label {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .gender-container label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Buttons */
+        button, #chec, #assign {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        button:hover, #chec:hover, #assign:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Camera Icon */
+        #camera {
+            font-size: 25px;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        #camera:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Alert Popup Styles */
+        #alerts, #al {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #popupoverly, #popupover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+            pointer-events: all;
+        }
+
+        #popup, #pop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: #ffffff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: all;
+            border: none;
+        }
+
+        #popup h2, #pop h2 {
+            color: var(--danger-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        #popup h3, #pop h4 {
+            color: #616161;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        #okbut, #okbutton {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 120px;
+            margin: 0 auto;
+        }
+
+        #okbut:hover, #okbutton:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #okbut:active, #okbutton:active {
+            transform: translateY(0);
+        }
+
+        /* Animation when shown */
+        #popupoverly.show, #popupover.show {
+            opacity: 1;
+        }
+
+        #popup.show, #pop.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Shake animation for errors */
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            20%, 60% { transform: translate(-50%, -50%) translateX(-8px); }
+            40%, 80% { transform: translate(-50%, -50%) translateX(8px); }
+        }
+
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .topic {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .gender-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .gender-container label {
+                width: 100%;
+            }
+            
+            form {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .topic button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            input, select, button {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+    <title>Railway Ticket Booking</title>
+</head>
+<body>
+    <div class="topic">
+        <h3>WELCOME, {{uname}}</h3>
+        <div>
+            <button class="two"><a href="{{ url_for('show_data') }}">Booking History</a></button>
+            <button class="three"><a href="{{ url_for('mainpage') }}">Logout</a></button>
+        </div>
+    </div>
+    
+    <h1>New Ticket Booking</h1>
+    <form action="{{ url_for('table') }}" method="post">
+        Name <input type="text" id="uname" name="uname" placeholder="Enter the Name of the Customer" value="{{uname}}" required>
+        
+        Start From 
+        <select name="place1" id="place1" required>
+            <option value="no">-- Select --</option>
+            <option value="chennai">CHENNAI</option>
+            <option value="coimbutore">COIMBATORE</option>
+            <option value="delhi">DELHI</option>
+            <option value="mumbai">MUMBAI</option>
+            <option value="tirunelveli">TIRUNELVELI</option>
+        </select>
+        
+        To
+        <select name="place2" id="place2" required>
+            <option value="no">-- Select --</option>
+            <option value="chennai">CHENNAI</option>
+            <option value="coimbutore">COIMBATORE</option>
+            <option value="delhi">DELHI</option>
+            <option value="mumbai">MUMBAI</option>
+            <option value="tirunelveli">TIRUNELVELI</option>
+        </select>
+        
+        Date
+        <input type="date" id="dates" name="dates" value="{{dates}}"> 
+        <input type="button" onclick="check()" id="chec" value="Check Availability">
+        
+        <p id="timehl">Train Time</p>
+        <input name="time" id="fack" type="text" placeholder="--Select the train Time--" readonly>
+        
+        <!-- All the time select options (shortened for brevity) -->
+        <select name="time" id="chennai-tirunelveli" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="10:20">10:20 AM -10H40M- 9:00 PM</option>
+            <!-- More options... -->
+        </select>
+        <!-- More route select elements... -->
+        
+        <input type="button" id="assign" onclick="verifyTime()" value="Verify Selection">
+        <input type="hidden" name="starttime" id="starttime" value="{{time}}">
+        <input type="hidden" name="train_no" id="train_no">
+        
+        Gender
+        <div class="gender-container">
+            <input type="radio" id="male" name="gender" value="Male">
+            <label for="male">Male</label>
+        
+            <input type="radio" id="female" name="gender" value="Female">
+            <label for="female">Female</label>
+        
+            <input type="radio" id="transgender" name="gender" value="Transgender">
+            <label for="transgender">Transgender</label>
+        </div>
+        
+        Mobile No
+        <input type="text" id="phone" name="phone" pattern="[7-9]{1}[0-9]{9}" maxlength="10" placeholder="Enter the Phone Number" value="{{phone}}">
+
+        Email ID
+        <input type="email" id="emailid" name="emailid" placeholder="Enter the Email ID" value="{{email}}">
+
+        Amount
+        <div id="amdiv" name="amdiv"></div>
+        <input type="hidden" id="amounts" name="amounts"> 
+
+        Photo
+        <a href="{{url_for('image')}}" id="camera" target="_blank">
+            <i class="bi bi-camera-fill"></i>
+            <input type="hidden" id="myicon" name="image">
+        </a>
+        <span style="margin-left: 10px;">Click to take a Picture</span>
+
+        <button id="book" type="submit" name="submit">BOOK TICKET</button>
+    </form>
+
+    <!-- Error Popups -->
+    <div id="alerts">
+        {% if error %}
+        <div id="popupoverly"></div>
+        <div id="popup">
+            <h2>All fields are required...</h2>
+            <h3>{{ error }}</h3>
+            <button type="button" id="okbut">OK</button>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div id="al">
+        <div id="popupover"></div>
+        <div id="pop">
+            <h2>All fields are required...</h2>
+            <h4></h4>
+            <button type="button" id="okbutton">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize - hide all time selects
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.time-select').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Set up popup handlers
+            const okBut = document.getElementById('okbut');
+            if (okBut) {
+                okBut.addEventListener('click', function() {
+                    document.getElementById('popupoverly').classList.remove('show');
+                    document.getElementById('popup').classList.remove('show');
+                    setTimeout(() => {
+                        document.getElementById('popupoverly').style.display = 'none';
+                        document.getElementById('popup').style.display = 'none';
+                    }, 300);
+                });
+                
+                // Trigger initial error popup if exists
+                setTimeout(() => {
+                    if (document.getElementById('popup')) {
+                        document.getElementById('popupoverly').style.display = 'block';
+                        document.getElementById('popup').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('popupoverly').classList.add('show');
+                            document.getElementById('popup').classList.add('show');
+                            document.getElementById('popup').classList.add('error-shake');
+                        }, 10);
+                    }
+                }, 100);
+            }
+            
+            // Programmatic popup handler
+            const okButton = document.getElementById('okbutton');
+            if (okButton) {
+                okButton.addEventListener('click', function() {
+                    document.getElementById('popupover').classList.remove('show');
+                    document.getElementById('pop').classList.remove('show');
+                    setTimeout(() => {
+                        document.getElementById('popupover').style.display = 'none';
+                        document.getElementById('pop').style.display = 'none';
+                    }, 300);
+                });
+            }
+        });
+
+        // Show custom popup function
+        function showPopup(message) {
+            const popupOverlay = document.getElementById('popupover');
+            const popup = document.getElementById('pop');
+            const popupMessage = popup.querySelector('h4');
+            
+            popupMessage.textContent = message;
+            popupOverlay.style.display = 'block';
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popupOverlay.classList.add('show');
+                popup.classList.add('show');
+                popup.classList.add('error-shake');
+            }, 10);
+        }
+
+        // Check train availability
+        function check() {
+            const v1 = document.getElementById("place1").value;
+            const v2 = document.getElementById("place2").value;
+            const p0 = document.getElementById("fack");
+            const amdiv = document.getElementById("amdiv");
+            const amounts = document.getElementById("amounts");
+            const train_no = document.getElementById("train_no");
+
+            // Hide all time selects first
+            document.querySelectorAll('.time-select').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Validation
+            if (v1 === "no" || v2 === "no") {
+                showPopup("Please select both starting and destination places");
+                return;
+            }
+            
+            if (v1 === v2) {
+                showPopup("Starting and destination places cannot be the same");
+                return;
+            }
+
+            // Route configuration
+            const routes = {
+                "chennai-tirunelveli": { price: 215, train: '101', id: "chennai-tirunelveli" },
+                "tirunelveli-chennai": { price: 215, train: '102', id: "tirunelveli-chennai" },
+                // More routes...
+            };
+
+            const routeKey = `${v1}-${v2}`;
+            
+            if (routes[routeKey]) {
+                const route = routes[routeKey];
+                const routeElement = document.getElementById(route.id);
+                
+                p0.style.display = "none";
+                routeElement.style.display = "block";
+                amdiv.textContent = `₹ ${route.price}`;
+                amounts.value = route.price;
+                train_no.value = route.train;
+            } else {
+                showPopup("No direct train available for this route");
+            }
+        }
+
+        // Verify selected time
+        function verifyTime() {
+            const timeSelects = document.querySelectorAll('.time-select');
+            let selectedTime = '';
+            
+            for (const select of timeSelects) {
+                if (select.style.display === 'block' && select.value !== 'no') {
+                    selectedTime = select.value;
+                    document.getElementById('starttime').value = selectedTime;
+                    break;
+                }
+            }
+            
+            if (!selectedTime) {
+                showPopup("Please select valid train time");
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!verifyTime()) {
+                e.preventDefault();
+                return;
+            }
+            
+            const phone = document.getElementById('phone').value;
+            if (!/^[7-9][0-9]{9}$/.test(phone)) {
+                showPopup("Please enter valid 10-digit mobile number starting with 7, 8, or 9");
+                e.preventDefault();
+                return;
+            }
+            
+            const gender = document.querySelector('input[name="gender"]:checked');
+            if (!gender) {
+                showPopup("Please select your gender");
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+</html> background: linear-gradient(rgba(0, 0, 0, 0.5), 
+url('vehicle-nature-hills-clouds-wallpaper-preview.jpg') no-repeat center center fixed;
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Show Bookings</title>
+    <style>
+        /* [Previous CSS styles remain exactly the same] */
+        /* Add this new style for the download button */
+        .download-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .download-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h3>WELCOME, {{ uname }}</h3>
+        <div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-light">New Ticket Booking</a>
+            <a href="{{ url_for('mainpage') }}" class="btn btn-dark">Logout</a>
+        </div>
+    </header>
+    
+    <h1>Your Booking Details</h1>
+    <div class="container">
+        {% if records %}
+            {% for record in records %}
+            <div class="ticket">
+                <h3 class="title">Railway Ticket</h3>
+                <form method="post" action="{{ url_for('cancel_ticket') }}" class="cancel-form">
+                    <input type="hidden" name="uname" value="{{ record.uname }}">
+                    <input type="hidden" name="train_no" value="{{ record.train_no }}">
+                    <input type="hidden" name="dates" value="{{ record.dates }}">
+                    <input type="hidden" name="times" value="{{ record.times }}">
+                    
+                    <div class="row">
+                        <p><strong>Name:</strong> {{ record.uname }}</p>
+                        <p><strong>Train No:</strong> {{ record.train_no }}</p>
+                    </div>
+                    <div class="row">
+                        <p><strong>From:</strong> {{ record.place1 }}</p>
+                        <p><strong>To:</strong> {{ record.place2 }}</p>
+                    </div>
+                    <div class="row">
+                        <p><strong>Date:</strong> {{ record.dates }}</p>
+                        <p><strong>Time:</strong> {{ record.times }}</p>
+                    </div>
+                    <div class="row">
+                        <p><strong>Amount:</strong> ₹{{ record.amount }}</p>
+                        <p><strong>Status:</strong>
+                            {% if record.image and record.image|trim!="" %}
+                            <span style="color: #2ecc71; font-weight: 500;">Verified</span>
+                            {% else %}
+                            <span style="color: #e74c3c; font-weight: 500;">Pending</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button type="button" class="cancel-btn" 
+                            data-train="{{ record.train_no }}" 
+                            data-date="{{ record.dates }}" 
+                            data-time="{{ record.times }}" 
+                            data-uname="{{ record.uname }}">
+                            Cancel Ticket
+                        </button>
+                        <button type="button" class="download-btn" 
+                            onclick="downloadTicket('{{ record.uname }}', '{{ record.train_no }}', '{{ record.dates }}', '{{ record.times }}')">
+                            Download Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-bookings">No Booking History Found</p>
+        {% endif %}
+    </div>
+
+    <div id="popupoverly"></div>
+    <div id="popup">
+        <h2>Are you sure you want to cancel this ticket?</h2>
+        <div>
+            <button id="yes">Yes, Cancel</button>
+            <button id="nobutton">No, Keep It</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let popupOverlay = document.getElementById("popupoverly");
+            let popup = document.getElementById("popup");
+            let confirmButton = document.getElementById("yes");
+            let cancelButton = document.getElementById("nobutton");
+            let activeForm = null;
+
+            document.querySelectorAll(".cancel-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    popupOverlay.style.display = "block";
+                    popup.style.display = "block";
+                    activeForm = this.closest("form");
+                    document.body.style.overflow = "hidden";
+                });
+            });
+
+            confirmButton.addEventListener("click", function () {
+                if (activeForm) {
+                    this.textContent = "Processing...";
+                    this.disabled = true;
+                    activeForm.submit();
+                }
+            });
+
+            cancelButton.addEventListener("click", function () {
+                popupOverlay.style.display = "none";
+                popup.style.display = "none";
+                document.body.style.overflow = "auto";
+            });
+
+            popupOverlay.addEventListener("click", function() {
+                popupOverlay.style.display = "none";
+                popup.style.display = "none";
+                document.body.style.overflow = "auto";
+            });
+        });
+
+        function downloadTicket(uname, trainNo, date, time) {
+            // Create a form dynamically
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ url_for('download_ticket') }}";
+            
+            // Add hidden inputs with ticket data
+            const addHiddenInput = (name, value) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            };
+            
+            addHiddenInput('uname', uname);
+            addHiddenInput('train_no', trainNo);
+            addHiddenInput('dates', date);
+            addHiddenInput('times', time);
+            
+            // Append form to body and submit
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+Add this popup container to your HTML:
+
+html
+Copy
+<!-- Error Popup (for JS errors) -->
+<div id="al-popup" class="popup" style="display: none;">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup('al-popup')">&times;</span>
+    <p id="al-message"></p>
+  </div>
+</div>
+
+<style>
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 80%;
+  color: #d32f2f;
+  position: relative;
+}
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+}
+</style>
+Run HTML
+JavaScript Error Handler:
+
+javascript
+Copy
+// Universal error handler
+function handleError(error) {
+  console.error("Error:", error);
+  document.getElementById('al-message').textContent = 
+    typeof error === 'string' ? error : error.message;
+  document.getElementById('al-popup').style.display = 'flex';
+}
+
+// Close popup
+function closePopup(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// Example usage in your existing functions
+function verifyTime() {
+  try {
+    // ... existing code ...
+    if (!selectedTrain) throw new Error("Please select a valid train time");
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Modify your existing functions to use try-catch
+function checkPayment() {
+  try {
+    // ... payment verification code ...
+    if (!isPaid) throw new Error("Payment verification failed");
+  } catch (error) {
+    handleError(error);
+  }
+}
+2. Server-Side Error Handling (Python Flask)
+Add this to your Flask template:
+
+html
+Copy
+<!-- Server Error Popup -->
+<div id="alerts-popup" class="popup" style="display: {% if error %}flex{% else %}none{% endif %};">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup('alerts-popup')">&times;</span>
+    <p>{{ error }}</p>
+  </div>
+</div>
+Run HTML
+Python Backend Example:
+
+python
+Copy
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+@app.route('/book', methods=['POST'])
+def book_ticket():
+    try:
+        if not request.form.get('payment_done') == '1':
+            raise ValueError("Payment not completed")
+            
+        # Process booking logic
+        return render_template('success.html')
+        
+    except Exception as e:
+        return render_template('booking.html', error=str(e))
+3. Full Integration Example
+Booking Form Submission:
+
+javascript
+Copy
+// In your form submission handler
+document.querySelector('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  try {
+    const response = await fetch('/book', {
+      method: 'POST',
+      body: new FormData(e.target)
+    });
+    
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error);
+    }
+    
+    window.location.href = '/success';
+  } catch (error) {
+    handleError(error);
+  }
+});
+Key Features:
+Consistent Error Display
+
+All JavaScript errors show in #al-popup
+
+Python exceptions show in #alerts-popup
+
+User-Friendly Messages
+
+javascript
+Copy
+// Example customized errors
+throw new Error("🚨 Train selection required");
+throw new Error("💳 Payment verification timeout");
+
+
+pip
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture Image from Webcam</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary-color: #f72585;
+            --light-gray: #f8f9fa;
+            --dark-gray: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            display: block;
+            margin: 0 auto;
+            background: var(--dark-gray);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: scaleX(-1); /* Mirror effect for more natural feel */
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        #captureBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        #captureBtn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #captureBtn:active {
+            transform: translateY(0);
+        }
+
+        .back-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-dark);
+        }
+
+        canvas { 
+            display: none; 
+        }
+
+        /* Loading indicator */
+        .loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            #captureBtn, .back-btn {
+                width: 100%;
+            }
+        }
+
+        /* Webcam permission notice */
+        .permission-notice {
+            background: #fff3cd;
+            color: #856404;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Capture Photo from Webcam</h2>
+        
+        <div class="permission-notice" id="permissionNotice">
+            Please allow camera access to use this feature
+        </div>
+
+        <!-- Video element to show webcam feed -->
+        <video id="video" autoplay playsinline></video>
+
+        <!-- Button to capture the image -->
+        <div class="button-group">
+            <button id="captureBtn">
+                <span class="loader" id="loader"></span>
+                <span id="btnText">Capture Photo</span>
+            </button>
+            <a href="{{url_for('dashboard')}}" class="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Canvas element to hold captured image -->
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const captureBtn = document.getElementById('captureBtn');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const permissionNotice = document.getElementById('permissionNotice');
+        const loader = document.getElementById('loader');
+        const btnText = document.getElementById('btnText');
+
+        // Get access to the user's webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream; // Display the webcam feed on the video element
+                permissionNotice.style.display = 'none';
+            })
+            .catch((err) => {
+                console.log("Error accessing webcam: " + err);
+                permissionNotice.style.display = 'block';
+                captureBtn.disabled = true;
+            });
+
+        // Capture image when the user clicks the button
+        captureBtn.addEventListener('click', () => {
+            // Show loading indicator
+            loader.style.display = 'block';
+            btnText.textContent = 'Processing...';
+            captureBtn.disabled = true;
+
+            // Set canvas dimensions equal to the video dimensions
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Draw the current video frame onto the canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Get base64 string of captured image
+            const imageData = canvas.toDataURL('image/jpeg');
+            localStorage.setItem('capturedImage', imageData);
+
+            // Send the captured image to the server using Fetch API (POST)
+            fetch('/upload_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `imageData=${encodeURIComponent(imageData)}`
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.close();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loader.style.display = 'none';
+                btnText.textContent = 'Capture Photo';
+                captureBtn.disabled = false;
+                alert('There was an error uploading your photo. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/download-ticket', methods=['POST'])
+def download_ticket():
+    try:
+        # Get ticket details from form
+        uname = request.form['uname']
+        train_no = request.form['train_no']
+        dates = request.form['dates']
+        times = request.form['times']
+        
+        # Fetch complete ticket details from database
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM booking01 
+            WHERE uname = ? AND train_no = ? AND dates = ? AND times = ?
+        """, (uname, train_no, dates, times))
+        ticket = cursor.fetchone()
+        conn.close()
+        
+        if not ticket:
+            flash("Ticket not found", "danger")
+            return redirect(url_for('show_data'))
+        
+        # Create PDF
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        
+        # Set up PDF styling
+        p.setTitle(f"Railway Ticket - {uname}")
+        
+        # Add header with color
+        p.setFillColor(blue)  # Using the imported color directly
+        p.setFont("Helvetica-Bold", 20)
+        p.drawString(100, 770, "INDIAN RAILWAYS")
+        
+        # Subheader
+        p.setFillColor(black)  # Using the imported color directly
+        p.setFont("Helvetica", 12)
+        p.drawString(100, 745, "E-Ticket / Journey Receipt")
+        
+        # Draw a line
+        p.line(100, 735, 500, 735)
+        
+        # Ticket details - including amount and places
+        details = [
+            ("Passenger Name:", str(ticket[2])),
+            ("Train Number:", str(ticket[1])),
+            ("From:", str(ticket[3])),  # Origin place
+            ("To:", str(ticket[4])),    # Destination place
+            ("Departure Date:", str(ticket[5])),
+            ("Departure Time:", str(ticket[6])),
+            ("Ticket Amount:", f"₹{str(ticket[10])}"),
+            ("Booking Status:", "Verified" if ticket[7] and str(ticket[7]).strip() else "Pending"),
+            ("Booking Date:", datetime.now().strftime("%d-%m-%Y %H:%M"))
+        ]
+        
+        # Draw ticket details
+        y_position = 700
+        p.setFont("Helvetica-Bold", 14)
+        p.drawString(100, y_position, "Journey Details")
+        y_position -= 30
+        
+        p.setFont("Helvetica", 12)
+        for label, value in details:
+            p.drawString(100, y_position, label)
+            p.drawString(250, y_position, value)
+            y_position -= 20
+        
+        # Add footer
+        p.setFont("Helvetica-Oblique", 10)
+        p.drawString(100, 100, "This is a computer generated ticket. No signature required.")
+        p.drawString(100, 80, "Please carry a valid ID proof during journey.")
+        
+        # Save the PDF
+        p.showPage()
+        p.save()
+        
+        # Prepare response
+        buffer.seek(0)
+        response = make_response(buffer.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename=RailwayTicket_{uname}_{train_no}.pdf'
+        
+        return response
+
+    except Exception as e:
+        app.logger.error(f"Error generating PDF: {str(e)}")
+        flash("Error generating ticket. Please try again.", "error")
+        return redirect(url_for('show_data'))
+
+
+
+
+
+
+
+
+
+
+
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Metro Railway - Ticket Booking</title>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <style>
+                :root {
+                    --primary: #4361ee;
+                    --primary-dark: #3a0ca3;
+                    --secondary: #3f37c9;
+                    --accent: #f72585;
+                    --light: #f8f9fa;
+                    --dark: #212529;
+                    --success: #4cc9f0;
+                    --warning: #f8961e;
+                    --danger: #ef233c;
+                    --radius: 12px;
+                    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                    --transition: all 0.3s ease;
+                }
+        
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                    font-family: 'Poppins', sans-serif;
+                }
+        
+                body {
+                    background-color: #f5f7fa;
+                    color: var(--dark);
+                    min-height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+        
+                .header {
+                    width: 100%;
+                    max-width: 1200px;
+                    background: linear-gradient(135deg, var(--primary), var(--secondary));
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: var(--radius);
+                    margin: 1rem 0;
+                    box-shadow: var(--shadow);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+        
+                .header-title {
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+        
+                .header-title h1 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    margin: 0;
+                }
+        
+                .header-buttons {
+                    display: flex;
+                    gap: 1rem;
+                }
+        
+                .btn {
+                    padding: 0.75rem 1.5rem;
+                    border-radius: var(--radius);
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: var(--transition);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    text-decoration: none;
+                    border: none;
+                }
+        
+                .btn-primary {
+                    background-color: var(--primary);
+                    color: white;
+                }
+        
+                .btn-primary:hover {
+                    background-color: var(--primary-dark);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                }
+        
+                .btn-outline {
+                    background-color: transparent;
+                    border: 2px solid white;
+                    color: white;
+                }
+        
+                .btn-outline:hover {
+                    background-color: white;
+                    color: var(--primary);
+                }
+        
+                .btn-success {
+                    background-color: var(--success);
+                    color: white;
+                }
+        
+                .btn-success:hover {
+                    background-color: #3aa8d8;
+                }
+        
+                .btn-checked {
+                    background-color: var(--warning);
+                    color: white;
+                }
+        
+                .btn-checked:hover {
+                    background-color: #e68a1a;
+                }
+        
+                .form-container {
+                    background: white;
+                    width: 90%;
+                    max-width: 800px;
+                    padding: 2rem;
+                    border-radius: var(--radius);
+                    box-shadow: var(--shadow);
+                    margin-bottom: 2rem;
+                }
+        
+                .form-title {
+                    text-align: center;
+                    margin-bottom: 1.5rem;
+                    color: var(--primary);
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                }
+        
+                .form-group {
+                    margin-bottom: 1.5rem;
+                }
+        
+                .form-group label {
+                    display: block;
+                    margin-bottom: 0.5rem;
+                    font-weight: 500;
+                    color: var(--dark);
+                }
+        
+                .form-control {
+                    width: 100%;
+                    padding: 0.75rem 1rem;
+                    border: 2px solid #e9ecef;
+                    border-radius: var(--radius);
+                    font-size: 1rem;
+                    transition: var(--transition);
+                    background-color: #f8f9fa;
+                }
+        
+                .form-control:focus {
+                    outline: none;
+                    border-color: var(--primary);
+                    background-color: white;
+                    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+                }
+        
+                .time-select {
+                    width: 100%;
+                    display: none;
+                }
+        
+                .time-select.show {
+                    display: block;
+                    animation: fadeIn 0.3s ease;
+                }
+        
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(-10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+        
+                .gender-container {
+                    display: flex;
+                    gap: 1rem;
+                    justify-content: center;
+                    margin: 1.5rem 0;
+                    flex-wrap: wrap;
+                }
+        
+                .gender-option {
+                    display: none;
+                }
+        
+                .gender-label {
+                    padding: 0.75rem 1.5rem;
+                    border: 2px solid #e9ecef;
+                    border-radius: var(--radius);
+                    cursor: pointer;
+                    transition: var(--transition);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+        
+                .gender-option:checked + .gender-label {
+                    background-color: var(--primary);
+                    color: white;
+                    border-color: var(--primary);
+                }
+        
+                .gender-label:hover {
+                    background-color: #f1f3f5;
+                }
+        
+                .camera-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    color: var(--primary);
+                    text-decoration: none;
+                    font-weight: 500;
+                    margin-top: 0.5rem;
+                }
+        
+                .camera-icon {
+                    font-size: 1.5rem;
+                }
+        
+                .amount-display {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: var(--primary);
+                    padding: 0.5rem 0;
+                }
+        
+                /* Popup styles */
+                .popup-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.75);
+                    backdrop-filter: blur(5px);
+                    z-index: 1000;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease;
+                }
+        
+                .popup-overlay.show {
+                    opacity: 1;
+                    pointer-events: all;
+                }
+        
+                .popup-content {
+                    background: white;
+                    border-radius: var(--radius);
+                    width: 90%;
+                    max-width: 400px;
+                    padding: 2rem;
+                    box-shadow: var(--shadow);
+                    transform: scale(0.9);
+                    opacity: 0;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+        
+                .popup-overlay.show .popup-content {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+        
+                .popup-title {
+                    color: var(--danger);
+                    font-size: 1.5rem;
+                    margin-bottom: 1rem;
+                    text-align: center;
+                }
+        
+                .popup-message {
+                    color: #555;
+                    margin-bottom: 2rem;
+                    text-align: center;
+                }
+        
+                .popup-button {
+                    display: block;
+                    width: 100%;
+                    max-width: 150px;
+                    margin: 0 auto;
+                    padding: 0.75rem;
+                    border-radius: var(--radius);
+                    background-color: var(--danger);
+                    color: white;
+                    border: none;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: var(--transition);
+                }
+        
+                .popup-button:hover {
+                    background-color: #d32f2f;
+                    transform: translateY(-2px);
+                }
+        
+                @media (max-width: 768px) {
+                    .header {
+                        flex-direction: column;
+                        gap: 1rem;
+                        padding: 1rem;
+                        text-align: center;
+                    }
+                    
+                    .header-buttons {
+                        width: 100%;
+                        flex-direction: column;
+                    }
+                    
+                    .btn {
+                        width: 100%;
+                        justify-content: center;
+                    }
+                    
+                    .form-container {
+                        padding: 1.5rem;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <header class="header">
+                <div class="header-title">
+                    <i class="fas fa-train"></i>
+                    <h1>Metro Railway</h1>
+                </div>
+                <div class="header-buttons">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="{{ url_for('instructions') }}" class="btn btn-outline">
+                        <i class="fas fa-info-circle"></i> Instructions
+                    </a>
+                    <a href="{{ url_for('show_data') }}" class="btn btn-outline">
+                        <i class="fas fa-history"></i> Bookings
+                    </a>
+                    <a href="{{ url_for('mainpage') }}" class="btn btn-outline">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </header>
+        
+            <div class="form-container">
+                <h2 class="form-title">New Ticket Booking</h2>
+                <form action="{{ url_for('table') }}" method="post">
+                    <div class="form-group">
+                        <label for="uname">Name</label>
+                        <input type="text" id="uname" name="uname" class="form-control" 
+                               placeholder="Enter your name" value="{{uname}}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="place1">Start From</label>
+                        <select name="place1" id="place1" class="form-control" required>
+                            <option value="no">Select departure station</option>
+                            <option value="chennai">CHENNAI</option>
+                            <option value="coimbutore">COIMBATORE</option>
+                            <option value="delhi">DELHI</option>
+                            <option value="mumbai">MUMBAI</option>
+                            <option value="tirunelveli">TIRUNELVELI</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="place2">To</label>
+                        <select name="place2" id="place2" class="form-control" required>
+                            <option value="no">Select destination station</option>
+                            <option value="chennai">CHENNAI</option>
+                            <option value="coimbutore">COIMBATORE</option>
+                            <option value="delhi">DELHI</option>
+                            <option value="mumbai">MUMBAI</option>
+                            <option value="tirunelveli">TIRUNELVELI</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dates">Date</label>
+                        <input type="date" id="dates" name="dates" class="form-control" value="{{dates}}" required>
+                    </div>
+                    
+                    <button type="button" id="chec" class="btn btn-primary" onclick="check()">
+                        <i class="fas fa-search"></i> Check Availability
+                    </button>
+                    
+                    <div class="form-group">
+                        <label>Train Time</label>
+                        <input name="time" id="fack" type="text" class="form-control" 
+                               placeholder="Select train time from options below" readonly>
+                        
+                        <!-- Time select options (hidden by default) -->
+                        <select name="time" id="chennai-tirunelveli" class="time-select form-control" required>
+                            <option value="no">-- Select time --</option>
+                            <option value="10:20">10:20 AM - 10H40M - 9:00 PM</option>
+                            <option value="14:45">2:45 PM - 7H45M - 10:30 PM</option>
+                            <option value="16:00">4:00 PM - 12H15M - 4:15 AM</option>
+                            <option value="17:20">5:20 PM - 9H50M - 3:10 AM</option>
+                        </select>
+                        
+                        <!-- Include all other time select options similarly -->
+                        <!-- ... -->
+                        
+                    </div>
+                    
+                    <button type="button" id="assign" class="btn btn-primary" onclick="verifyTime()">
+                        <i class="fas fa-check-circle"></i> Verify Selection
+                    </button>
+                    
+                    <input type="hidden" name="starttime" id="starttime" value="{{time}}">
+                    <input type="hidden" name="train_no" id="train_no">
+                    
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="gender-container">
+                            <input type="radio" id="male" name="gender" value="Male" class="gender-option">
+                            <label for="male" class="gender-label">
+                                <i class="fas fa-male"></i> Male
+                            </label>
+                            
+                            <input type="radio" id="female" name="gender" value="Female" class="gender-option">
+                            <label for="female" class="gender-label">
+                                <i class="fas fa-female"></i> Female
+                            </label>
+                            
+                            <input type="radio" id="transgender" name="gender" value="Transgender" class="gender-option">
+                            <label for="transgender" class="gender-label">
+                                <i class="fas fa-transgender"></i> Transgender
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Mobile No</label>
+                        <input type="text" id="phone" name="phone" class="form-control" 
+                               pattern="[7-9]{1}[0-9]{9}" maxlength="10" 
+                               placeholder="Enter your phone number" value="{{phone}}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="emailid">Email ID</label>
+                        <input type="email" id="emailid" name="emailid" class="form-control" 
+                               placeholder="Enter your email" value="{{email}}" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <div id="amdiv" class="amount-display">₹ 0</div>
+                        <input type="hidden" id="amounts" name="amounts">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Photo Verification</label>
+                        <a href="{{url_for('image')}}" id="camera" class="camera-link" target="_blank">
+                            <i class="bi bi-camera-fill camera-icon"></i>
+                            Click to take your verification photo
+                            <input type="hidden" id="myicon" name="image">
+                        </a>
+                    </div>
+                    
+                    <button id="book" type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fas fa-ticket-alt"></i> Book Ticket
+                    </button>
+                </form>
+            </div>
+        
+            <!-- Popup for errors -->
+            <div id="alerts">
+                {% if error %}
+                <div id="popupoverly" class="popup-overlay show">
+                    <div class="popup-content">
+                        <h3 class="popup-title">Error</h3>
+                        <p class="popup-message">{{ error }}</p>
+                        <button type="button" id="okbut" class="popup-button">OK</button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        
+            <div id="al">
+                <div id="popupover" class="popup-overlay">
+                    <div class="popup-content">
+                        <h3 class="popup-title">Attention</h3>
+                        <p id="popup-message" class="popup-message"></p>
+                        <button type="button" id="okbutton" class="popup-button">OK</button>
+                    </div>
+                </div>
+            </div>
+        
+            <script>
+                // Set minimum date to today
+                const dateInput = document.getElementById("dates");
+                const today = new Date().toISOString().split("T")[0];
+                dateInput.min = today;
+        
+                // Prevent past date selection
+                dateInput.addEventListener("input", function() {
+                    if (dateInput.value <= today) {
+                        showPopup("Please select a future date.");
+                        dateInput.value = "";
+                    }
+                });
+        
+                // Main function to check train availability
+                function check() {
+                    const v1 = document.getElementById("place1").value;
+                    const v2 = document.getElementById("place2").value;
+                    const checkBtn = document.getElementById("chec");
+                    
+                    // Hide all time select elements first
+                    document.querySelectorAll('.time-select').forEach(el => {
+                        el.style.display = 'none';
+                        el.classList.remove('show');
+                    });
+        
+                    // Validation checks
+                    if (v1 === "no" || v2 === "no") {
+                        showPopup("Please select both starting and destination places");
+                        return;
+                    }
+                    
+                    if (v1 === v2) {
+                        showPopup("Starting and destination places cannot be the same");
+                        return;
+                    }
+        
+                    // Route configuration with prices and train numbers
+                    const routes = {
+                        "chennai-tirunelveli": { price: 215, train: '101', id: "chennai-tirunelveli" },
+                        "tirunelveli-chennai": { price: 215, train: '102', id: "tirunelveli-chennai" },
+                        "chennai-coimbutore": { price: 190, train: '103', id: "chennai-coimbutore" },
+                        "coimbutore-chennai": { price: 190, train: '104', id: "coimbutore-chennai" },
+                        "chennai-delhi": { price: 505, train: '106', id: "chennai-delhi" },
+                        "delhi-chennai": { price: 505, train: '105', id: "delhi-chennai" },
+                        "chennai-mumbai": { price: 360, train: '107', id: "chennai-mumbai" },
+                        "mumbai-chennai": { price: 360, train: '108', id: "mumbai-chennai" },
+                        "tirunelveli-coimbutore": { price: 210, train: '109', id: "tirunelveli-coimbutore" },
+                        "tirunelveli-mumbai": { price: 450, train: '110', id: "tirunelveli-mumbai" },
+                        "tirunelveli-delhi": { price: 585, train: '111', id: "tirunelveli-delhi" },
+                        "coimbutore-delhi": { price: 560, train: '112', id: "coimbutore-delhi" },
+                        "coimbutore-mumbai": { price: 380, train: '113', id: "coimbutore-mumbai" },
+                        "coimbutore-tirunelveli": { price: 180, train: '114', id: "coimbutore-tirunelveli" },
+                        "mumbai-delhi": { price: 400, train: '115', id: "mumbai-delhi" },
+                        "mumbai-coimbutore": { price: 375, train: '116', id: "mumbai-coimbutore" },
+                        "mumbai-tirunelveli": { price: 470, train: '117', id: "mumbai-tirunelveli" },
+                        "delhi-mumbai": { price: 375, train: '118', id: "delhi-mumbai" },
+                        "delhi-coimbutore": { price: 560, train: '119', id: "delhi-coimbutore" },
+                        "delhi-tirunelveli": { price: 585, train: '120', id: "delhi-tirunelveli" }
+                    };
+        
+                    const routeKey = `${v1}-${v2}`;
+                    
+                    if (routes[routeKey]) {
+                        const route = routes[routeKey];
+                        const routeElement = document.getElementById(route.id);
+                        
+                        document.getElementById('fack').style.display = "none";
+                        routeElement.classList.add('show');
+                        document.getElementById('amdiv').textContent = `₹ ${route.price}`;
+                        document.getElementById('amounts').value = route.price;
+                        document.getElementById('train_no').value = route.train;
+                        
+                        // Change button appearance after check
+                        checkBtn.innerHTML = '<i class="fas fa-check"></i> Available Trains Found';
+                        checkBtn.classList.remove('btn-primary');
+                        checkBtn.classList.add('btn-checked');
+                    } else {
+                        showPopup("No direct train available for this route");
+                    }
+                }
+        
+                // Function to verify selected time
+                function verifyTime() {
+                    const timeSelects = document.querySelectorAll('.time-select');
+                    const verifyBtn = document.getElementById('assign');
+                    let selectedTime = '';
+                    
+                    // Find the selected time option
+                    for (const select of timeSelects) {
+                        if (select.classList.contains('show') && select.value !== 'no') {
+                            selectedTime = select.value;
+                            document.getElementById('starttime').value = selectedTime;
+                            break;
+                        }
+                    }
+                    
+                    if (!selectedTime) {
+                        showPopup("Please select a valid train time from the options");
+                        return false;
+                    }
+                    
+                    // Change button appearance after verification
+                    verifyBtn.innerHTML = '<i class="fas fa-check-double"></i> Time Verified';
+                    verifyBtn.classList.remove('btn-primary');
+                    verifyBtn.classList.add('btn-success');
+                    return true;
+                }
+        
+                // Function to show popup with message
+                function showPopup(message) {
+                    const popupOverlay = document.getElementById('popupover');
+                    const popup = document.querySelector('#popupover .popup-content');
+                    const popupMessage = document.getElementById('popup-message');
+                    
+                    popupMessage.textContent = message;
+                    popupOverlay.classList.add('show');
+                }
+        
+                // Initialize popups
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Handle the server-side error popup if it exists
+                    const errorPopup = document.getElementById('popupoverly');
+                    if (errorPopup && errorPopup.classList.contains('show')) {
+                        document.getElementById('okbut').addEventListener('click', function() {
+                            errorPopup.classList.remove('show');
+                        });
+                    }
+                    
+                    // Handle the JS-created popup
+                    document.getElementById('okbutton').addEventListener('click', function() {
+                        document.getElementById('popupover').classList.remove('show');
+                    });
+                    
+                    // Form validation before submission
+                    document.querySelector('form').addEventListener('submit', function(e) {
+                        // First verify time
+                        if (!verifyTime()) {
+                            e.preventDefault();
+                            return;
+                        }
+                        
+                        // Validate phone
+                        const phone = document.getElementById('phone').value;
+                        if (!/^[7-9][0-9]{9}$/.test(phone)) {
+                            showPopup("Please enter a valid 10-digit mobile number starting with 7, 8, or 9");
+                            e.preventDefault();
+                            return;
+                        }
+                        
+                        // Validate gender
+                        const gender = document.querySelector('input[name="gender"]:checked');
+                        if (!gender) {
+                            showPopup("Please select your gender");
+                            e.preventDefault();
+                            return;
+                        }
+                    });
+                });
+            </script>
+        </body>
+        </html>
+
+
+
+
+
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Ticket Booking </title>
+
+    <style>
+        /* Alert Popup Container */
+        #alerts, #al {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* Popup Overlay */
+        #popupoverly, #popupover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+            pointer-events: all;
+        }
+
+        /* Popup Box */
+        #popup, #pop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: #ffffff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: all;
+            border: none;
+        }
+
+        /* Popup Content */
+        #popup h2, #pop h2 {
+            color: #d32f2f; /* Red for error messages */
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        #popup h3, #pop h4 {
+            color: #616161;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        /* Popup Buttons */
+        #okbut, #okbutton {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 120px;
+            margin: 0 auto;
+        }
+
+        #okbut:hover, #okbutton:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #okbut:active, #okbutton:active {
+            transform: translateY(0);
+        }
+
+        /* Animation when shown */
+        #popupoverly.show, #popupover.show {
+            opacity: 1;
+        }
+
+        #popup.show, #pop.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Shake animation for errors */
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            20%, 60% { transform: translate(-50%, -50%) translateX(-8px); }
+            40%, 80% { transform: translate(-50%, -50%) translateX(8px); }
+        }
+
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        /* Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6; /* Light gray background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Header / Navbar */
+
+        :root {
+            --primary: #6a1b9a;  /* Deep purple */
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;   /* Amber accent */
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            width: 95%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 10px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-left: 410px;
+        }
+
+        .header-title i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--text-light);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive design */
+        :root {
+            --primary: #6a1b9a;  /* Deep purple */
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;   /* Amber accent */
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            .header-title {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .header-title h1 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                color: #f3e5f5;
+            }
+            
+            .welcome-text {
+                font-size: 1rem;
+            }
+            
+            .header-buttons {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        /* Form Container */
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 85%;
+            max-width: 600px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Input Fields */
+        input{
+            width: 95%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: all 0.3s ease-in-out;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1976D2;
+            background: white;
+            box-shadow: 0 0 8px rgba(25, 118, 210, 0.3);
+        }
+
+        /* Gender Selection Container */
+        .gender-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Hide Default Radio Buttons */
+        .gender-container input[type="radio"] {
+            display: none;
+        }
+
+        /* Style for Labels (Custom Buttons) */
+        .gender-container label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: #fff;
+            color: #555;
+            width: 120px;
+            text-align: center;
+        }
+
+        /* Selected State */
+        .gender-container input[type="radio"]:checked + label {
+            background-color: #1976D2;
+            color: white;
+            border-color: #1976D2;
+        }
+
+        /* Hover Effect */
+        .gender-container label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Icons for Better UI */
+        .gender-container label::before {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        /* Icons for Male, Female, Transgender */
+        .gender-container #male + label::before {
+            content: "👨";
+        }
+
+        .gender-container #female + label::before {
+            content: "👩";
+        }
+
+        .gender-container #transgender + label::before {
+            content: "🏳️‍⚧️";
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .gender-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .gender-container label {
+                width: 100%;
+            }
+        }
+
+
+        /* Buttons */
+        button, #chec, #assign {
+            display: block;
+            width: 100%;
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover, #chec:hover, #assign:hover {
+            background: #1565C0;
+        }
+
+        /* Train Time Section */
+        .time-select {
+            width: 100%;
+        }
+        #camera{
+            font-size: 25px;
+            display: inline-block;
+        }
+
+        /* Mobile-Friendly Adjustments */
+        @media (max-width: 600px) {
+            .topic {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+            }
+
+            form {
+                width: 95%;
+                padding: 20px;
+            }
+
+            input, select, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        /* Popup Overlay Styles */
+        #popupoverly, #popupover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+
+        /* Popup Container Styles */
+        #popup, #pop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Popup Heading */
+        #popup h2, #pop h2 {
+            color: #d32f2f; /* Error red color */
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Popup Message */
+        #popup h3, #pop h4 {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Popup Button */
+        #okbut, #okbutton {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+        }
+
+        #okbut:hover, #okbutton:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #okbut:active, #okbutton:active {
+            transform: translateY(0);
+        }
+
+        /* Active States for Showing Popups */
+        #popupoverly.show, #popupover.show {
+            display: block;
+            opacity: 1;
+        }
+
+        #popup.show, #pop.show {
+            display: block;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Error Shake Animation */
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            20%, 60% { transform: translate(-50%, -50%) translateX(-8px); }
+            40%, 80% { transform: translate(-50%, -50%) translateX(8px); }
+        }
+
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        .confirmation {
+        display: none;
+        margin-top: 25px;
+        padding: 20px;
+        background: #f0fff0;
+        border-radius: 6px;
+        border-left: 4px solid #2ecc71;
+    }
+    .validity-box {
+        background: #e8f4fc;
+        padding: 15px;
+        border-radius: 6px;
+        margin: 15px 0;
+        text-align: center;
+    }
+    .validity-period {
+        font-weight: bold;
+        color: #2980b9;
+        font-size: 16px;
+    }
+    .validity-dates {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    .date-label {
+        font-size: 12px;
+        color: #666;
+    }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">
+            <i class="fas fa-train"></i>
+            <h1>Metro Railway <span class="welcome-text">Welcome, {{ uname }}</span></h1>
+        </div>
+        <div class="header-buttons">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{{ url_for('show_data') }}" class="btn btn-outline">
+                <i class="fas fa-history"></i> Bookings
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+    <div>
+        <button style="display: inline-block;" onclick="newticket()">New Ticket booking</button>
+        <button style="display: inline-block;" onclick="sessionpage()">Session Pass</button>
+    </div>
+    <form action="{{ url_for('table') }} " method="post" id="new">
+        <h1>New Ticket Booking</h1>
+        Name <input type="text" id="uname" name="uname" placeholder="Enter the Name of the Customer" value="{{uname}}" required>
+        <label for="from_station">From Station</label>
+        <select id="from_station" name="from_station" required>
+                    <option value="">Select Station</option>
+                    <option value="Central Metro">Central Metro</option>
+                    <option value="Thousand Light Metro">Thousand Light Metro</option>
+                    <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+                    <option value="Airport Metro">Airport Metro</option>
+                    <option value="Saidepet Metro">Saidepet Metro</option>
+                    <option value="Guindy Metro">Guindy Metro</option>
+            </select>
+            <label for="to_station">To Station</label>
+            <select id="to_station" name="to_station" required>
+                <option value="">Select Station</option>
+                <option value="Central Metro">Central Metro</option>
+                <option value="Thousand Light Metro">Thousand Light Metro</option>
+                <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+                <option value="Airport Metro">Airport Metro</option>
+                <option value="Saidepet Metro">Saidepet Metro</option>
+                <option value="Guindy Metro">Guindy Metro</option>
+        </select>
+        Journey Date
+        <input type="date" id="dates" name="dates" value="{{dates}}""> 
+        <input type="button" onclick="check()" id="chec" value="Check Availability">
+        <p id="timehl">Train Time</p>
+        <input name="time" id="fack" type="text" placeholder="--Select the train Time--" readonly >
+        <select name="time" id="Chennai-Tirunelveli" required class="time-select" >
+            <option value="no">-- Select --</option>
+            <option value="10:20 ">10:20 AM -10H40M- 9:00 PM</option>
+            <option value="14:45 ">2:45 PM -7H45M- 10:30 PM</option>
+            <option value="16:00 ">4:00 PM -12H15M- 4:15 AM</option>
+            <option value="17:20 ">5:20 PM -9H50M- 3:10 AM</option>
+        </select>
+        <select name="time" id="Tirunelveli-Chennai"required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="6:05 ">6:05 AM -7H50M- 1:55 PM</option>
+            <option value="9:00 ">9:00 AM -8H35M- 8:25 PM</option>
+            <option value="19:15 ">7:15 PM -10H45M- 6:00 AM</option>
+            <option value="19:50 ">7:50 PM -10H45M- 6:35 AM</option>
+        </select>
+        <select name="time" id="Chennai-Delhi"required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="13:15 ">1:15 PM -35H05M- 12:20 AM</option>
+            <option value="17:45 ">5:45 PM -35H25M- 5:10 AM</option>
+            <option value="5:10  ">5:10 AM -39H45M- 8:55 PM</option>
+        </select>
+        <select name="time" id="Delhi-Chennai" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="16:10 ">4:10 PM -36H50M- 5:00 AM</option>
+            <option value="14:00 ">2:00 PM -41H00M- 7:00 AM</option>
+            <option value="21:05 ">9:05 PM -33H30M- 6:35 AM</option>
+        </select>
+        <select name="time" id="Chennai-Mumbai" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="6:20  ">6:20 AM -23H30M- 5:50 AM</option>
+            <option value="13:15 ">1:15 PM -23H15M- 12:30 PM</option>
+            <option value="18:25 ">6:25 PM -21H30M- 2:55 PM</option>
+        </select>
+        <select name="time" id="Mumbai-Chennai"required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="22:52 ">10:52 PM -23H23M- 10:15 PM</option>
+            <option value="12:45 ">12:45 PM -22H00M- 10:45 PM</option>
+            <option value="18:40 ">6:40 PM -21H30M- 4:10 PM</option>
+        </select>
+        <select name="time" id="Chennai-Coimbatore" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="6:10  ">6:10 AM -7H55M- 2:05 PM</option>
+            <option value="7:15  ">7:15 AM -7H00M- 2:15 PM</option>
+            <option value="13:25 ">1:25 PM -8H02M- 9:27 PM</option>
+            <option value="14:35 ">2:35 PM -7H45M- 10:20 PM</option>
+        </select>
+        <select name="time" id="Coimbatore-Chennai" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="2:00  ">2:00 AM -8H00M- 10:00 AM</option>
+            <option value="6:20  ">6:20 AM -7H30M- 1:15 PM</option>
+            <option value="7:30  ">7:30 AM -8H25M- 4:00 PM</option>
+            <option value="12:20 ">12:20 PM -9H20M- 9:40 AM</option>
+        </select>
+        <select name="time" id="Tirunelveli-Coimbatore" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="9:30 ">9:30 AM -10H00M- 7:30 PM</option>
+            <option value="23:20 ">11:20 PM -7H55M- 7:15 AM</option>
+        </select>
+        <select name="time" id="Coimbatore-Tirunelveli" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="8:00 ">8:00 AM -9H55M- 5:55 PM</option>
+            <option value="19:30 ">7:30 PM -7H20M- 2:50 AM</option>
+        </select>
+        <select name="time" id="Tirunelveli-Mumbai" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="8:25 ">8:25 AM -34H40M- 7:05 PM</option>
+            <option value="7:20 ">7:20 AM -31H50M- 3:10 PM</option>
+        </select>
+        <select name="time" id="Mumbai-Tirunelveli" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="20:40 ">8:40 PM -31H15M- 3:55 AM</option>
+            <option value="21:30 ">9:30 PM -37H20M- 10:55 AM</option>
+        </select>
+        <select name="time" id="Tirunelveli-Delhi" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="17:40 ">5:40 PM -51H15M- 8:55 PM</option>
+            <option value="22:20 ">10:20 PM -44H15M- 6:35 PM</option>
+        </select>
+        <select name="time" id="Delhi-Tirunelveli" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="14:10 ">2:10 PM -52H35M- 6:35 PM</option>
+            <option value="5:20 ">5:20 AM -45H00M- 2:20 AM</option>
+        </select>
+        <select name="time" id="Delhi-Coimbatore" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="20:10 ">8:10 PM -40H22M- 12:32 PM</option>
+            <option value="5:10 ">5:10 AM -41H02M- 10:12 PM</option>
+        </select>
+        <select name="time" id="Coimbatore-Delhi" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="20:55 ">8:55 PM -40H55M- 1:30 PM</option>
+            <option value="23:10 ">11:10 PM -43H35M- 6:45 PM</option>
+        </select>
+        <select name="time" id="Coimbatore-Mumbai" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="8:50 ">8:50 AM -29H05M- 1:25 PM</option>
+            <option value="14:25 ">2:25 PM -22H25M- 1:20 PM</option>
+        </select>
+        <select name="time" id="Mumbai-Coimbatore" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="22:35 ">10:35 PM -32H15M- 6:50 AM</option>
+            <option value="15:25 ">3:25 PM -23H15M- 2:40 PM</option>
+        </select>
+        <select name="time" id="Mumbai-Delhi" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="11:25 ">11:25 AM -23H15M- 10:40 AM</option>
+            <option value="17:00 ">5:00 PM -15H32M- 8:32 AM</option>
+            <option value="19:35 ">7:35 PM -25H50M- 9:25 PM</option>
+            <option value="23:30 ">11:30 PM -28H00M- 3:30 AM</option>
+            <option value="17:10 ">5:10 PM -16H33M- 9:43 AM</option>
+        </select>
+        <select name="time" id="Delhi-Mumbai" required class="time-select">
+            <option value="no">-- Select --</option>
+            <option value="16:35 ">4:35 PM -21H55M- 2:30 PM</option>
+            <option value="16:55 ">4:55 PM -15H40M- 8:35 AM</option>
+            <option value="5:10 ">5:10 AM -26H25M- 7:35 AM</option>
+            <option value="8:40 ">8:40 PM -27H25M- 12:05 AM</option>
+            <option value="4:00 ">4:00 AM -19H35M- 11:35 PM</option>
+        </select>
+        <input type="button" id="assign"  onclick="verifyTime()"  value="Verify Selection">
+        <input type="hidden" name="starttime" id="starttime" value="{{time}}">
+        <input type="hidden" name="train_no" id="train_no">
+        Gender
+        <div class="gender-container">
+            <input type="radio" id="male" name="gender" value="Male">
+            <label for="male">Male</label>
+        
+            <input type="radio" id="female" name="gender" value="Female">
+            <label for="female">Female</label>
+        
+            <input type="radio" id="transgender" name="gender" value="Transgender">
+            <label for="transgender">Transgender</label>
+        </div>
+        
+
+        Mobile No
+        <input type="text" id="phone" name="phone" pattern="[7-9]{1}[0-9]{9}" maxlength="10" placeholder="Enter the Phone Number" value="{{phone}}">
+
+        Email ID
+        <input type="email" id="emailid" name="emailid" placeholder="Enter the Email ID" value="{{email}}" readonly>
+
+        Amount
+        <div id="amdiv" name="amdiv"></div>
+        <input type="hidden" id="amounts" name="amounts" > 
+
+        Photo
+        <a href="{{url_for('image')}}" id="camera"  target="_blank"><i class="bi bi-camera-fill"><input type="hidden" id="myicon" name="image"  ></i></a>
+        <p style="display: inline;">Click  it to take a Picture</p>
+
+        <button id="book" type="submit" name="submit" >BOOK</button>
+    </form>
+    <div id="alerts">
+        {% if error %}
+        <div id="popupoverly"></div>
+        <div id="popup">
+            <h3>{{ error }}</h3>
+            <button type="button" id="okbut">OK</button>
+        </div>
+        {% endif %}
+    </div>
+    <div id="al">
+        <div id="popupover"></div>
+        <div id="pop">
+            <h2>All fields are required...</h2>
+            <h4></h4>
+            <button type="button" id="okbutton">OK</button>
+        </div>
+    </div>
+    
+<div id="session" style="display: none;">
+<div class="pass-container">
+    <h1>Advance Metro Pass Booking</h1>
+    
+    <div class="form-group">
+        <label for="start-date">Select Start Date</label>
+        <input type="date" id="start-date" required>
+        <div class="date-note">Book your pass for any date between tomorrow and 5 days from now</div>
+    </div>
+    
+    <div class="form-group">
+        <label for="pass-type">Pass Type</label>
+        <select id="pass-type" required>
+            <option value="">-- Select Pass Type --</option>
+            <option value="regular">Regular 30-Day Pass - ₹2500</option>
+            <option value="premium">Premium 30-Day Pass - ₹3500</option>
+            <option value="student">Student 30-Day Pass - ₹1250</option>
+        </select>
+    </div>
+    
+    <button id="book-btn">Book Advance Pass</button>
+    
+    <div id="confirmation" class="confirmation">
+        <h3>✅ Booking Confirmed!</h3>
+        
+        <div class="validity-box">
+            <div class="validity-period">30-DAY PASS VALIDITY</div>
+            <div class="validity-dates">
+                <div>
+                    <div class="date-label">FROM</div>
+                    <div id="from-date" class="validity-date"></div>
+                </div>
+                <div>
+                    <div class="date-label">TO</div>
+                    <div id="to-date" class="validity-date"></div>
+                </div>
+            </div>
+        </div>
+        
+        <p><strong>Pass Type:</strong> <span id="pass-type-display"></span></p>
+        <p>Collect your pass at any metro station on or after your start date.</p>
+    </div>
+</div>
+</div>
+
+<script>
+    
+        // Main function to check train availability
+        function check() {
+            const v1 = document.getElementById("place1").value;
+            const v2 = document.getElementById("place2").value;
+            const p0 = document.getElementById("fack");
+            const amdiv = document.getElementById("amdiv");
+            const amounts = document.getElementById("amounts");
+            const starttime = document.getElementById("starttime");
+            const train_no = document.getElementById("train_no");
+            const checkBtn = document.getElementById("chec");
+
+
+            // Hide all time select elements first
+            document.querySelectorAll('.time-select').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Validation checks
+            if (v1 === "no" || v2 === "no") {
+                showPopup("Please select both starting and destination places");
+            }
+            
+            if (v1 === v2) {
+                showPopup("Starting and destination places cannot be the same");
+            }
+
+            // Route configuration with prices and train numbers
+            const routes = {
+                "Chennai-Tirunelveli": { price: 215, train: '101', id: "Chennai-Tirunelveli" },
+                "Tirunelveli-Chennai": { price: 215, train: '102', id: "Tirunelveli-Chennai" },
+                "Chennai-Coimbatore": { price: 190, train: '103', id: "Chennai-Coimbatore" },
+                "Coimbatore-Chennai": { price: 190, train: '104', id: "Coimbatore-Chennai" },
+                "Chennai-Delhi": { price: 505, train: '106', id: "Chennai-Delhi" },
+                "Delhi-Chennai": { price: 505, train: '105', id: "Delhi-Chennai" },
+                "Chennai-Mumbai": { price: 360, train: '107', id: "Chennai-Mumbai" },
+                "Mumbai-Chennai": { price: 360, train: '108', id: "Mumbai-Chennai" },
+                "Tirunelveli-Coimbatore": { price: 210, train: '109', id: "Tirunelveli-Coimbatore" },
+                "Tirunelveli-Mumbai": { price: 450, train: '110', id: "Tirunelveli-Mumbai" },
+                "Tirunelveli-Delhi": { price: 585, train: '111', id: "Tirunelveli-Delhi" },
+                "Coimbatore-Delhi": { price: 560, train: '112', id: "Coimbatore-Delhi" },
+                "Coimbatore-Mumbai": { price: 380, train: '113', id: "Coimbatore-Mumbai" },
+                "Coimbatore-Tirunelveli": { price: 180, train: '114', id: "Coimbatore-Tirunelveli" },
+                "Mumbai-Delhi": { price: 400, train: '115', id: "Mumbai-Delhi" },
+                "Mumbai-Coimbatore": { price: 375, train: '116', id: "Mumbai-Coimbatore" },
+                "Mumbai-Tirunelveli": { price: 470, train: '117', id: "Mumbai-Tirunelveli" },
+                "Delhi-Mumbai": { price: 375, train: '118', id: "Delhi-Mumbai" },
+                "Delhi-Coimbatore": { price: 560, train: '119', id: "Delhi-Coimbatore" },
+                "Delhi-Tirunelveli": { price: 585, train: '120', id: "Delhi-Tirunelveli" }
+            };
+
+            const routeKey = `${v1}-${v2}`;
+            
+            if (routes[routeKey]) {
+                const route = routes[routeKey];
+                const routeElement = document.getElementById(route.id);
+                
+                p0.style.display = "none";
+                routeElement.style.display = "inline-block";
+                amdiv.textContent = `₹ ${route.price}`;
+                amounts.value = route.price;
+                train_no.value = route.train;
+
+                checkBtn.value = "Trains Found!";
+
+            } else {
+                showPopup("No direct train available for this route");
+                checkBtn.value = "No Trains Found!";
+            }
+        }
+
+        // Function to verify selected time
+        function verifyTime() {
+            const timeSelects = document.querySelectorAll('.time-select');
+            const assignBtn = document.getElementById("assign");
+
+            let selectedTime = '';
+            
+            // Find the selected time option
+            for (const select of timeSelects) {
+                if (select.style.display === 'inline-block' && select.value !== 'no') {
+                    selectedTime = select.value;
+                    document.getElementById('starttime').value = selectedTime;
+                    assignBtn.value="Time Verified!"
+                    break;
+                }
+            }
+            
+            if (!selectedTime) {
+                showPopup("Please select a places / Please select a valid train time and click the verify button");
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide all time selects initially
+            document.querySelectorAll('.time-select').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Add click handler for OK button in popup
+            const okButton = document.getElementById('okbutton');
+            if (okButton) {
+                okButton.addEventListener('click', function() {
+                    document.getElementById('popupover').style.display = 'none';
+                    document.getElementById('pop').style.display = 'none';
+                });
+            }
+            
+            // Form validation before submission
+            // Modify your form submission handler
+        document.querySelector('form').addEventListener('submit', function(e) {
+            // First verify time
+            if (!verifyTime()) {
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate phone
+            const phone = document.getElementById('phone').value;
+            if (!/^[7-9][0-9]{9}$/.test(phone)) {
+                showPopup("Please enter a valid 10-digit mobile number starting with 7, 8, or 9");
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate gender
+            const gender = document.querySelector('input[name="gender"]:checked');
+            if (!gender) {
+                showPopup("Please select your gender");
+                e.preventDefault();
+                return;
+            }
+            
+            // Validate image
+            
+        });
+        });
+        // Function to show popup with message
+        function showPopup(message) {
+            const popupOverlay = document.getElementById('popupover');
+            const popup = document.getElementById('pop');
+            const popupMessage = popup.querySelector('h4');
+            
+            popupMessage.textContent = message;
+            
+            // Show elements first
+            popupOverlay.style.display = 'block';
+            popup.style.display = 'block';
+            
+            // Then animate them in
+            setTimeout(() => {
+                popupOverlay.classList.add('show');
+                popup.classList.add('show');
+                popup.classList.add('error-shake');
+            }, 10);
+        }
+
+        // Initialize popups on DOM load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle the server-side error popup if it exists
+            const errorPopup = document.getElementById('popup');
+            if (errorPopup) {
+                const errorOverlay = document.getElementById('popupoverly');
+                
+                errorOverlay.style.display = 'block';
+                errorPopup.style.display = 'block';
+                
+                setTimeout(() => {
+                    errorOverlay.classList.add('show');
+                    errorPopup.classList.add('show');
+                    errorPopup.classList.add('error-shake');
+                }, 100);
+                
+                document.getElementById('okbut').addEventListener('click', function() {
+                    errorOverlay.classList.remove('show');
+                    errorPopup.classList.remove('show');
+                    setTimeout(() => {
+                        errorOverlay.style.display = 'none';
+                        errorPopup.style.display = 'none';
+                    }, 300);
+                });
+            }
+            
+            // Handle the JS-created popup
+            const okButton = document.getElementById('okbutton');
+            if (okButton) {
+                okButton.addEventListener('click', function() {
+                    document.getElementById('popupover').classList.remove('show');
+                    document.getElementById('pop').classList.remove('show');
+                    setTimeout(() => {
+                        document.getElementById('popupover').style.display = 'none';
+                        document.getElementById('pop').style.display = 'none';
+                    }, 300);
+                });
+            }
+        });
+
+        const newb = document.getElementById('new');
+    const session=document.getElementById("session");
+
+    function sessionpage(){
+        session.style.display="block"
+        newb.style.display="none"
+    }
+
+    function newticket(){
+        newb.style.display="block"
+        session.style.display="none"
+
+    }
+    // Set date constraints (tomorrow to 5 days from today)
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 5);
+    
+    // Format as YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    // Set date input attributes
+    const dateInput = document.getElementById('start-date');
+    dateInput.min = formatDate(tomorrow);
+    dateInput.max = formatDate(maxDate);
+    dateInput.value = formatDate(tomorrow); // Default to tomorrow
+    
+    // Format display date as "15 Jan"
+    function formatDisplayDate(date) {
+        return date.toLocaleDateString('en-IN', { 
+            day: 'numeric', 
+            month: 'short' 
+        });
+    }
+    
+    // Booking function
+    document.getElementById('book-btn').addEventListener('click', function() {
+        const startDate = new Date(dateInput.value);
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 30);
+        
+        // Update confirmation display
+        document.getElementById('from-date').textContent = formatDisplayDate(startDate);
+        document.getElementById('to-date').textContent = formatDisplayDate(endDate);
+        document.getElementById('pass-type-display').textContent = 
+            document.getElementById('pass-type').options[document.getElementById('pass-type').selectedIndex].text;
+        
+        // Show confirmation
+        document.getElementById('confirmation').style.display = 'block';
+        document.getElementById('confirmation').scrollIntoView({ behavior: 'smooth' });
+    });
+    </script>
+</body>
+</html>
+
+
+:root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+            --danger: #d32f2f;
+            --success: #2e7d32;
+            --gray: #e0e0e0;
+            --dark-gray: #757575;
+        }
+    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+    
+        body {
+            background: #f5f7fa;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+
+
+
+        @admin_bp.route('/get_tickets')
+def get_tickets():
+    try:
+        all_tickets = []
+        
+        # Get single journey tickets
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT rowid as id, uname, place1, place2, dates, gender, 
+                   mobile, emailid, amount, image, booking_date, action 
+            FROM booking02 
+            WHERE action='active'
+        """)
+        
+        for row in cursor.fetchall():
+            all_tickets.append({
+                'id': row[0],
+                'type': 'single',
+                'username': row[1],
+                'from_station': row[2],
+                'to_station': row[3],
+                'date': row[4],
+                'end_date': '',
+                'gender': row[5],
+                'mobile': row[6],
+                'email': row[7],
+                'amount': row[8],
+                'image_path': row[9],
+                'booking_date': row[10],
+                'status': row[11]
+            })
+        conn.close()
+
+        # Get season pass tickets
+        conn = sqlite3.connect(DATABASES)
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT rowid as id, uname, place1, place2, start_date, end_date, 
+                   gender, mobile, emailid, amount, image, booking_date, action 
+            FROM sesbooking02 
+            WHERE action='active'
+        """)
+        
+        for row in cursor.fetchall():
+            all_tickets.append({
+                'id': row[0],
+                'type': 'season',
+                'username': row[1],
+                'from_station': row[2],
+                'to_station': row[3],
+                'date': row[4],
+                'end_date': row[5],
+                'gender': row[6],
+                'mobile': row[7],
+                'email': row[8],
+                'amount': row[9],
+                'image_path': row[10],
+                'booking_date': row[11],
+                'status': row[12]
+            })
+        conn.close()
+
+        return jsonify(all_tickets)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Show Bookings</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a0ca3;
+            --danger-color: #ef233c;
+            --danger-dark: #d90429;
+            --success-color: #4cc9f0;
+            --season-pass-color: #9c27b0;
+            --season-pass-dark: #7b1fa2;
+            --light-gray: #f8f9fa;
+            --dark-gray: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 10px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-left: 330px;
+        }
+
+        .header-title i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--text-light);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive design */
+        :root {
+            --primary: #6a1b9a;  /* Deep purple */
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;   /* Amber accent */
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+    
+            .header-title {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .header-title h1 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                color: #f3e5f5;
+            }
+            
+            .welcome-text {
+                font-size: 1rem;
+            }
+            
+            .header-buttons {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        h1 {
+            text-align: center;
+            margin: 2rem 0;
+            color: white;
+            font-weight: 600;
+            font-size: 2.2rem;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+        }
+
+        .ticket {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 350px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .ticket:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .ticket.season-pass {
+            border-top: 4px solid var(--season-pass-color);
+        }
+
+        .ticket.single-journey {
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .ticket .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            text-align: center;
+            border-bottom: 2px dashed #eee;
+            padding-bottom: 0.75rem;
+        }
+
+        .season-pass .title {
+            color: var(--season-pass-color);
+        }
+
+        .single-journey .title {
+            color: var(--primary-color);
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+
+        .row p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .row strong {
+            font-weight: 500;
+        }
+
+        .season-pass .row strong {
+            color: var(--season-pass-dark);
+        }
+
+        .single-journey .row strong {
+            color: var(--primary-dark);
+        }
+
+        .cancel-btn {
+            width: 125%;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .cancel-btn:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            width: 110%;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            font-size: 1rem;
+            margin-left: 40px;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+        }
+
+        .no-bookings {
+            text-align: center;
+            color: #6c757d;
+            font-size: 1.2rem;
+            margin: 3rem 0;
+            width: 100%;
+        }
+
+        /* Popup Styles */
+        #popupoverly {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+
+        #popup {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            display: none;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #popup h2 {
+            color: var(--dark-gray);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        #yes, #nobutton {
+            width: 120px;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        #yes {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        #yes:hover {
+            background-color: var(--danger-dark);
+            transform: translateY(-2px);
+        }
+
+        #nobutton {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        #nobutton:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .header h3 {
+                margin-bottom: 0.5rem;
+            }
+
+            .header .btn {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                margin: 1.5rem 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1rem;
+                gap: 1.5rem;
+            }
+
+            .ticket {
+                padding: 1.25rem;
+            }
+
+            #popup {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            #yes, #nobutton {
+                width: 100px;
+            }
+        }
+        .download-btn {
+            width: 100%;
+            border: none;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .season-pass .download-btn {
+            background-color: var(--season-pass-color);
+            color: white;
+        }
+
+        .season-pass .download-btn:hover {
+            background-color: var(--season-pass-dark);
+            transform: translateY(-2px);
+        }
+
+        .single-journey .download-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .single-journey .download-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .ticket-type {
+            position: absolute;
+            top: -10px;
+            right: 15px;
+            background: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .season-pass .ticket-type {
+            color: var(--season-pass-color);
+            border: 1px solid var(--season-pass-color);
+        }
+
+        .single-journey .ticket-type {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .ticket {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">
+            <i class="fas fa-train"></i>
+            <h1>Metro Railway <span class="welcome-text">Welcome, {{ uname }}</span></h1>
+        </div>
+        <div class="header-buttons">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{{ url_for('first') }}" class="btn btn-outline">
+                <i class="fas fa-ticket-alt"></i> New Booking
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+    
+    <h1 style="color: var(--primary-dark);">Your Booking Details</h1>
+    <div class="container">
+        {% if records %}
+            {% for record in records %}
+            <div class="ticket {% if record.ticket_type == 'season' %}season-pass{% else %}single-journey{% endif %}">
+                <div class="ticket-type">
+                    {% if record.ticket_type == 'season' %}
+                        Season Pass
+                    {% else %}
+                        Single Journey
+                    {% endif %}
+                </div>
+                <h3 class="title">
+                    {% if record.ticket_type == 'season' %}
+                        Season Pass Ticket
+                    {% else %}
+                        Railway Ticket
+                    {% endif %}
+                </h3>
+                
+                <div class="row">
+                    <p><strong>Name:</strong> {{ record.uname }}</p>
+                </div>
+                <div class="row">
+                    <p><strong>From:</strong> {{ record.place1 }}</p>
+                    <p><strong>To:</strong> {{ record.place2 }}</p>
+                </div>
+                
+                {% if record.ticket_type == 'season' %}
+                <div class="row">
+                    <p><strong>Start Date:</strong> {{ record.start_date }}</p>
+                    <p><strong>End Date:</strong> {{ record.end_date }}</p>
+                </div>
+                {% else %}
+                <div class="row">
+                    <p><strong>Date:</strong> {{ record.dates }}</p>
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <p><strong>Amount:</strong> ₹{{ record.amount }}</p>
+                    <p><strong>Status:</strong>
+                        {% if record.image and record.image|trim != "" %}
+                        <span style="color: #2ecc71; font-weight: 500;">{{ record.action }}</span>
+                        {% else %}
+                        <span style="color: #e74c3c; font-weight: 500;">{{ record.action }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="button-group">
+                    <form method="post" action="{{ url_for('cancel_ticket') }}" class="cancel-form">
+                        <input type="hidden" name="uname" value="{{ record.uname }}">
+                        <input type="hidden" name="ticket_type" value="{{ record.ticket_type }}">
+                        
+                        {% if record.ticket_type == 'season' %}
+                            <input type="hidden" name="start_date" value="{{ record.start_date }}">
+                            <input type="hidden" name="end_date" value="{{ record.end_date }}">
+                        {% else %}
+                            <input type="hidden" name="dates" value="{{ record.dates }}">
+                        {% endif %}
+                        
+                        <button type="button" class="cancel-btn">
+                            <i class="fas fa-times-circle"></i> Cancel
+                        </button>
+                    </form>
+                    
+                    <form method="post" action="{{ url_for('delete_ticket') }}" class="delete-form">
+                        <input type="hidden" name="uname" value="{{ record.uname }}">
+                        <input type="hidden" name="ticket_type" value="{{ record.ticket_type }}">
+                        
+                        {% if record.ticket_type == 'season' %}
+                            <input type="hidden" name="start_date" value="{{ record.start_date }}">
+                            <input type="hidden" name="end_date" value="{{ record.end_date }}">
+                        {% else %}
+                            <input type="hidden" name="dates" value="{{ record.dates }}">
+                        {% endif %}
+                        
+                        <button type="button" class="delete-btn">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
+                    </form>
+                </div>
+                
+                <form method="post" action="{{ url_for('download_ticket') }}" class="download-form">
+                    <input type="hidden" name="uname" value="{{ record.uname }}">
+                    <input type="hidden" name="place1" value="{{ record.place1 }}">
+                    <input type="hidden" name="place2" value="{{ record.place2 }}">
+                    <input type="hidden" name="amount" value="{{ record.amount }}">
+                    <input type="hidden" name="ticket_type" value="{{ record.ticket_type }}">
+                    
+                    {% if record.ticket_type == 'season' %}
+                        <input type="hidden" name="start_date" value="{{ record.start_date }}">
+                        <input type="hidden" name="end_date" value="{{ record.end_date }}">
+                    {% else %}
+                        <input type="hidden" name="dates" value="{{ record.dates }}">
+                    {% endif %}
+                    
+                    <button type="button" class="download-btn" onclick="handleDownloadTicket(this)">
+                        <i class="fas fa-download"></i> Download Ticket
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-bookings">No Booking History Found</p>
+        {% endif %}
+    </div>
+
+    <div id="popupoverly"></div>
+    <div id="popup">
+        <h2>Are you sure you want to cancel this ticket?</h2>
+        <div>
+            <button id="yes">Yes, Cancel</button>
+            <button id="nobutton">No, Keep It</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let popupOverlay = document.getElementById("popupoverly");
+            let popup = document.getElementById("popup");
+            let confirmButton = document.getElementById("yes");
+            let cancelButton = document.getElementById("nobutton");
+            let activeForm = null;
+
+            document.querySelectorAll(".cancel-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    popupOverlay.style.display = "block";
+                    popup.style.display = "block";
+                    activeForm = this.closest("form");
+                    document.body.style.overflow = "hidden";
+                });
+            });
+
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    popupOverlay.style.display = "block";
+                    popup.style.display = "block";
+                    activeForm = this.closest("form");
+                    document.body.style.overflow = "hidden";
+                });
+            });
+
+            confirmButton.addEventListener("click", function () {
+                if (activeForm) {
+                    this.textContent = "Processing...";
+                    this.disabled = true;
+                    activeForm.submit();
+                }
+            });
+
+            cancelButton.addEventListener("click", function () {
+                popupOverlay.style.display = "none";
+                popup.style.display = "none";
+                document.body.style.overflow = "auto";
+            });
+
+            popupOverlay.addEventListener("click", function() {
+                popupOverlay.style.display = "none";
+                popup.style.display = "none";
+                document.body.style.overflow = "auto";
+            });
+        });
+
+        // Function to handle download button click
+        function handleDownloadTicket(buttonElement) {
+            // Get the parent form element
+            const form = buttonElement.closest('form.download-form');
+            
+            // Create a temporary form element
+            const tempForm = document.createElement('form');
+            tempForm.method = 'POST';
+            tempForm.action = "{{ url_for('download_ticket') }}";
+            tempForm.style.display = 'none';
+            
+            // Copy all hidden inputs from the original form
+            const inputs = form.querySelectorAll('input[type="hidden"]');
+            inputs.forEach(input => {
+                const newInput = document.createElement('input');
+                newInput.type = 'hidden';
+                newInput.name = input.name;
+                newInput.value = input.value;
+                tempForm.appendChild(newInput);
+            });
+            
+            // Add to document and submit
+            document.body.appendChild(tempForm);
+            tempForm.submit();
+            
+            // Clean up
+            setTimeout(() => {
+                document.body.removeChild(tempForm);
+            }, 100);
+        }
+    </script>
+</body>
+</html>

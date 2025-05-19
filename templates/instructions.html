@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metro Railway - Instructions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary: #6a1b9a;
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            width: 94.9%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-container {
+            position: absolute;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .welcome-text {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .header-title i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .user-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Main Content Styles */
+        .instruction-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+        }
+
+        .personalized-note {
+            background-color: rgba(106, 27, 154, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .personalized-note h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .instruction-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+        }
+
+        .instruction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .instruction-card h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            background-color: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .step-content h4 {
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .step-content p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            font-size: 1rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline-primary {
+            background-color: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-light);
+            color: white;
+            border-color: var(--primary-light);
+        }
+
+        .btn-danger {
+            background-color: white;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .icon {
+            font-size: 1.25rem;
+        }
+
+        /* Booking Specific Instructions */
+        .booking-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .feature-card h3 {
+            color: var(--primary);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .header-title {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .header-title h1 {
+                font-size: 1.5rem;
+            }
+            
+            .welcome-container {
+                position: static;
+                align-items: center;
+                margin-top: 0.5rem;
+            }
+            
+            .header-buttons {
+                position: static;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+            
+            .instruction-container {
+                padding: 0 1rem;
+            }
+            
+            .instruction-card {
+                padding: 1.5rem;
+            }
+            
+            .step {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-buttons .action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .booking-features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .personalized-note {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">
+            <h1><i class="fas fa-subway"></i> Metro Railway</h1>
+            
+            <div class="welcome-container">
+                <span class="welcome-text">Welcome ,</span>
+                <span class="user-name">{{ uname }}</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="instruction-container">
+        <div class="personalized-note">
+            <h4><i class="fas fa-user-circle"></i> Personalized Guide for {{ uname }}</h4>
+            <p>These instructions will help you navigate the Metro Railway booking system. 
+            Logged in as: <strong>{{ email }}</strong></p>
+        </div>
+        
+        <div class="instruction-card">
+            <h2><i class="fas fa-ticket-alt"></i> New Ticket Booking</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Select Your Journey</h4>
+                    <p>Choose your departure and arrival stations from the dropdown menus. The system will automatically calculate available routes and fares.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Choose Travel Date</h4>
+                    <p>Select your travel date from the calendar. You can only book tickets for current or future dates.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Check Availability</h4>
+                    <p>Click "Check Availability" to verify train schedules and see the calculated fare for your journey.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instruction-card">
+            <h2><i class="fas fa-calendar-alt"></i> Season Pass</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Select Commute Route</h4>
+                    <p>Choose your regular commuting stations. Season passes are valid for unlimited travel between these stations.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Choose Start Date</h4>
+                    <p>Select when you want your pass to activate (between tomorrow and 5 days from now). The pass will be valid for 30 days.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Complete Application</h4>
+                    <p>Provide your details, take a verification photo, and complete payment to activate your pass.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-features">
+            <div class="feature-card">
+                <h3><i class="fas fa-camera"></i> Photo Verification</h3>
+                <p>All bookings require a photo for identity verification. Click the camera icon to take your picture in a well-lit area.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fas fa-money-bill-wave"></i> Fare Calculation</h3>
+                <p>Fares are automatically calculated based on distance. Season passes offer 30 days of unlimited travel for a fixed price.</p>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fas fa-mobile-alt"></i> Mobile Tickets</h3>
+                <p>All tickets are available digitally. You can access them anytime from your Bookings page.</p>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{{ url_for('first') }}" class="action-btn btn-primary">
+                <i class="fas fa-ticket-alt icon"></i> Book a Ticket
+            </a>
+            <a href="{{ url_for('show_data') }}" class="action-btn btn-outline-primary">
+                <i class="fas fa-history icon"></i> View Bookings
+            </a>
+            <a href="{{ url_for('login') }}" class="action-btn btn-danger">
+                <i class="fas fa-sign-out-alt icon"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Add any interactive functionality if needed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Example: Highlight current page in navigation
+            const currentPage = window.location.pathname;
+            const navLinks = document.querySelectorAll('.header-buttons a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

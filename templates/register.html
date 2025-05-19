@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Registration Page</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --light-gray: #f8f9fa;
+            --dark-gray: #212529;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .logi {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logi:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .logi h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark-gray);
+            font-weight: 500;
+            text-align: left;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            background-color: var(--light-gray);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+            background-color: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 2.6rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+
+        .btn-register:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .login-link a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        #alerts {
+            width: 100%;
+            max-width: 450px;
+            margin: 1rem auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 576px) {
+            .logi {
+                padding: 1.5rem;
+            }
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="logi">
+        <form action="{{ url_for('register') }}" method="post">
+            <h2>REGISTER</h2>
+            
+            <div class="form-group">
+                <label for="uname">USERNAME</label>
+                <input type="text" class="form-control" id="uname" name="uname" placeholder="Enter your username">
+                <i class="bi bi-person-fill input-icon"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">EMAIL</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                <i class="bi bi-envelope-fill input-icon"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">PASSWORD</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                <i class="bi bi-key-fill input-icon"></i>
+            </div>
+            
+            <button type="submit" class="btn-register">
+                <i class="bi bi-person-plus-fill me-2"></i> REGISTER
+            </button>
+            
+            <div class="login-link">
+                Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
+            </div>
+        </form>
+    </div>
+    
+    <div id="alerts">
+        {% if error %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ error }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

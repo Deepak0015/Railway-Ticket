@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Admin Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --admin-dark: #0f172a;
+            --admin-darker: #020617;
+            --admin-primary: #1e293b;
+            --admin-accent: #ef4444;
+            --admin-light: #f8fafc;
+            --admin-glass: rgba(255, 255, 255, 0.08);
+            --admin-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--admin-darker), var(--admin-dark));
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--admin-light);
+            margin: 0;
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--admin-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--admin-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 
+                0 10px 15px -3px rgba(0, 0, 0, 0.3),
+                0 4px 6px -4px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(239, 68, 68, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h1 {
+            font-weight: 800;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .admin-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--admin-border);
+            border-radius: 0.75rem;
+            color: var(--admin-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--admin-accent);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 65%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 67%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: var(--admin-light);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--admin-accent);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .auth-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(239, 68, 68, 0.4);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+
+        .hover\:text-white:hover {
+            color: var(--admin-light) !important;
+        }
+        .transition-colors {
+            transition: color 0.2s ease;
+        }
+
+        .security-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--admin-border);
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Error Notification */
+        .error-notification {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 100%;
+            max-width: 380px;
+            background: rgba(239, 68, 68, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .error-icon {
+            font-size: 1.25rem;
+            margin-top: 0.125rem;
+        }
+
+        .error-message {
+            flex: 1;
+        }
+
+        .error-message strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .error-message span {
+            font-size: 0.85rem;
+            display: block;
+        }
+
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+            align-self: flex-start;
+            font-size: 0.75rem;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* Loading State */
+        .auth-spinner {
+            display: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Input Error State */
+        .input-error {
+            animation: shake 0.5s;
+            border-color: var(--admin-accent) !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .admin-container {
+                padding: 2rem 1.5rem;
+                border-radius: 1rem;
+            }
+            
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>
+                <i class="fas fa-lock"></i> Secure Access
+            </h1>
+            <p>Administrative credentials required for system entry</p>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Administrator ID</label>
+            <i class="fas fa-user-secret input-icon"></i>
+            <input type="text" class="input-field" id="adminUser" placeholder="Enter admin identifier" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Security Passphrase</label>
+            <i class="fas fa-key input-icon"></i>
+            <input type="password" class="input-field" id="adminPass" placeholder="Enter secure passphrase">
+            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+        </div>
+
+        <button class="auth-btn" id="loginBtn">
+            <span class="auth-spinner" id="loginSpinner"></span>
+            <span id="loginText">Verify Identity</span>
+        </button>
+
+        <div class="text-center mt-3">
+            <a href="{{ url_for('mainpage') }}" class="text-decoration-none text-white-50 hover:text-white transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Home
+            </a>
+        </div>
+
+        <div class="security-footer">
+            <i class="fas fa-shield-alt"></i> All activities are monitored and recorded
+        </div>
+    </div>
+
+    <div class="error-notification" id="errorNotification">
+        <div class="error-content">
+            <i class="fas fa-exclamation-circle error-icon"></i>
+            <div class="error-message">
+                <strong>AUTHENTICATION FAILURE</strong>
+                <span id="errorDetail">Invalid security credentials</span>
+            </div>
+            <button type="button" class="btn-close" onclick="dismissError()"></button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const adminUser = document.getElementById('adminUser');
+        const adminPass = document.getElementById('adminPass');
+        const togglePassword = document.getElementById('togglePassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginText = document.getElementById('loginText');
+        const loginSpinner = document.getElementById('loginSpinner');
+        const errorNotification = document.getElementById('errorNotification');
+        const errorDetail = document.getElementById('errorDetail');
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = adminPass.getAttribute('type') === 'password' ? 'text' : 'password';
+            adminPass.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        // Dismiss error notification
+        function dismissError() {
+            errorNotification.style.display = 'none';
+        }
+
+        // Show error with message
+        function showError(message) {
+            errorDetail.textContent = message;
+            errorNotification.style.display = 'block';
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(dismissError, 5000);
+            
+            // Add shake animation to inputs
+            adminUser.classList.add('input-error');
+            adminPass.classList.add('input-error');
+            setTimeout(() => {
+                adminUser.classList.remove('input-error');
+                adminPass.classList.remove('input-error');
+            }, 500);
+        }
+
+        // Handle admin login
+        async function handleLogin() {
+            const username = adminUser.value.trim();
+            const password = adminPass.value.trim();
+
+            // Validate inputs
+            if (!username) {
+                showError("Administrator ID is required");
+                adminUser.focus();
+                return;
+            }
+
+            if (!password) {
+                showError("Security passphrase is required");
+                adminPass.focus();
+                return;
+            }
+
+            // Set loading state
+            loginBtn.disabled = true;
+            loginText.textContent = "Authenticating...";
+            loginSpinner.style.display = 'block';
+
+            try {
+                const response = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "Authentication server error");
+                }
+
+                if (data.success) {
+                    window.location.href = data.redirect || "/admin/dashboard";
+                } else {
+                    throw new Error(data.message || "Invalid credentials");
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError(error.message || "Authentication failed. Try again.");
+            } finally {
+                // Reset button state
+                loginBtn.disabled = false;
+                loginText.textContent = "Verify Identity";
+                loginSpinner.style.display = 'none';
+            }
+        }
+
+        // Event listeners
+        loginBtn.addEventListener('click', handleLogin);
+
+        // Allow login on Enter key
+        adminPass.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        // Initialize with focus on username field
+        adminUser.focus();
+    </script>
+</body>
+</html>

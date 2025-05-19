@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Ticket Booking </title>
+
+    <style>
+        /* Alert Popup Container */
+        #alerts, #al {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        /* Popup Overlay */
+        #popupoverly, #popupover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+            pointer-events: all;
+        }
+
+        /* Popup Box */
+        #popup, #pop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: #ffffff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: all;
+            border: none;
+        }
+
+        /* Popup Content */
+        #popup h2, #pop h2 {
+            color: #d32f2f; /* Red for error messages */
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        #popup h3, #pop h4 {
+            color: #616161;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        /* Popup Buttons */
+        #okbut, #okbutton {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 120px;
+            margin: 0 auto;
+        }
+
+        #okbut:hover, #okbutton:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #okbut:active, #okbutton:active {
+            transform: translateY(0);
+        }
+
+        /* Animation when shown */
+        #popupoverly.show, #popupover.show {
+            opacity: 1;
+        }
+
+        #popup.show, #pop.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Shake animation for errors */
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            20%, 60% { transform: translate(-50%, -50%) translateX(-8px); }
+            40%, 80% { transform: translate(-50%, -50%) translateX(8px); }
+        }
+
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        /* Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6; /* Light gray background */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Header / Navbar */
+
+        :root {
+            --primary: #6a1b9a;  /* Deep purple */
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;   /* Amber accent */
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            width: 95%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 10px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-left: 410px;
+        }
+
+        .header-title i {
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.7rem 1.3rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--text-light);
+            color: var(--text-light);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive design */
+        :root {
+            --primary: #6a1b9a;  /* Deep purple */
+            --primary-dark: #4a148c;
+            --primary-light: #9c4dcc;
+            --accent: #ffab00;   /* Amber accent */
+            --text-light: #f3e5f5;
+            --text-dark: #212121;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            .header-title {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .header-title h1 {
+                font-size: 1.5rem;
+                flex-direction: column;
+                color: #f3e5f5;
+            }
+            
+            .welcome-text {
+                font-size: 1rem;
+            }
+            
+            .header-buttons {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        /* Form Container */
+         /* Form Styles */
+    form {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        width: 600px;
+        max-width: 700px;
+        margin: 20px auto;
+        display: flex;
+        font-size: 18px;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    #new h1 ,#Season h1{
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 1.8rem;
+    }
+
+        /* Input Fields */
+        input{
+            width: 95%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: all 0.3s ease-in-out;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #f9f9f9;
+            transition: all 0.3s ease-in-out;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1976D2;
+            background: white;
+            box-shadow: 0 0 8px rgba(25, 118, 210, 0.3);
+        }
+
+        /* Gender Selection Container */
+        .gender-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Hide Default Radio Buttons */
+        .gender-container input[type="radio"] {
+            display: none;
+        }
+
+        /* Style for Labels (Custom Buttons) */
+        .gender-container label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: #fff;
+            color: #555;
+            width: 120px;
+            text-align: center;
+        }
+
+        /* Selected State */
+        .gender-container input[type="radio"]:checked + label {
+            background-color: #1976D2;
+            color: white;
+            border-color: #1976D2;
+        }
+
+        /* Hover Effect */
+        .gender-container label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Icons for Better UI */
+        .gender-container label::before {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        /* Icons for Male, Female, Transgender */
+        .gender-container #male + label::before {
+            content: "👨";
+        }
+
+        .gender-container #female + label::before {
+            content: "👩";
+        }
+
+        .gender-container #transgender + label::before {
+            content: "🏳️‍⚧️";
+        }
+
+        /* Gender Selection Container */
+        .gender-container1 {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        /* Hide Default Radio Buttons */
+        .gender-container1 input[type="radio"] {
+            display: none;
+        }
+
+        /* Style for Labels (Custom Buttons) */
+        .gender-container1 label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            background-color: #fff;
+            color: #555;
+            width: 120px;
+            text-align: center;
+        }
+
+        /* Selected State */
+        .gender-container1 input[type="radio"]:checked + label {
+            background-color: #1976D2;
+            color: white;
+            border-color: #1976D2;
+        }
+
+        /* Hover Effect */
+        .gender-container1 label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Icons for Better UI */
+        .gender-container1 label::before {
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        /* Icons for Male, Female, Transgender */
+        .gender-container1 #male1 + label::before {
+            content: "👨";
+        }
+
+        .gender-container1 #female1 + label::before {
+            content: "👩";
+        }
+
+        .gender-container1 #transgender1 + label::before {
+            content: "🏳️‍⚧️";
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .gender-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .gender-container label {
+                width: 100%;
+            }
+        }
+
+
+        /* Buttons */
+        button, #chec, #assign,#verif {
+            display: block;
+            width: 100%;
+            background: #1976D2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover, #chec:hover, #assign:hover, #verif:hover {
+            background: #1565C0;
+        }
+
+        
+        #camera{
+            font-size: 25px;
+            display: inline-block;
+        }
+
+        /* Mobile-Friendly Adjustments */
+        @media (max-width: 600px) {
+            .topic {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+            }
+
+            form {
+                width: 95%;
+                padding: 20px;
+            }
+
+            input, select, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+
+        
+
+        /* Popup Overlay Styles */
+        #popupoverly, #popupover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+
+        /* Popup Container Styles */
+        #popup, #pop {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            text-align: center;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Popup Heading */
+        #popup h2, #pop h2 {
+            color: #d32f2f; /* Error red color */
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Popup Message */
+        #popup h3, #pop h4 {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Popup Button */
+        #okbut, #okbutton {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 100px;
+        }
+
+        #okbut:hover, #okbutton:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #okbut:active, #okbutton:active {
+            transform: translateY(0);
+        }
+
+        /* Active States for Showing Popups */
+        #popupoverly.show, #popupover.show {
+            display: block;
+            opacity: 1;
+        }
+
+        #popup.show, #pop.show {
+            display: block;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        /* Error Shake Animation */
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            20%, 60% { transform: translate(-50%, -50%) translateX(-8px); }
+            40%, 80% { transform: translate(-50%, -50%) translateX(8px); }
+        }
+
+        .error-shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            width: 100%;
+        }
+        
+        .button-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .button-container button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .button-container button.active {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .button-container button.inactive {
+            background-color: #e0e0e0;
+            color: #616161;
+        }
+        
+        /* Adjust form margins */
+        form {
+            margin: 20px auto;
+        }
+        
+        /* Success popup style */
+        .success-popup h2 {
+            color: #2e7d32 !important; /* Green for success */
+        }
+
+        /* Station Select Container */
+        .station-select-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .station-select-wrapper {
+            flex: 1;
+        }
+
+        .swap-stations-btn {
+            width: 100px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .swap-stations-btn:hover {
+            transform: rotate(180deg);
+            color: var(--primary-dark);
+        }
+
+        .date-note {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">
+            <i class="fas fa-train"></i>
+            <h1>Metro Railway <span class="welcome-text">Welcome, {{ uname }}</span></h1>
+        </div>
+        <div class="header-buttons">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{{ url_for('show_data') }}" class="btn btn-outline">
+                <i class="fas fa-history"></i> Bookings
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </header>
+    <div class="button-container">
+        <button id="newTicketBtn" onclick="newticket()" class="active">New Ticket Booking</button>
+        <button id="sessionPassBtn" onclick="sessionpage()" class="inactive">Season Pass</button>
+    </div>
+    <div id="new">
+        <h1>New Ticket Booking</h1>
+    <form action="{{ url_for('table') }} " method="post" >
+        Name <input type="text" id="uname" name="uname" placeholder="Enter the Name of the Customer" value="{{uname}}" required>
+        
+        <div class="station-select-container">
+            <div class="station-select-wrapper">
+                <label for="place1">From Station</label>
+                <select id="place1" name="place1" required>
+                    <option value="">Select Station</option>
+                    <option value="Central Metro">Central Metro</option>
+                    <option value="Thousand Light Metro">Thousand Light Metro</option>
+                    <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+                    <option value="Airport Metro">Airport Metro</option>
+                    <option value="Saidepet Metro">Saidepet Metro</option>
+                    <option value="Washermenpet Metro">Washermenpet Metro</option>
+                </select>
+            </div>
+            
+            <button type="button" class="swap-stations-btn" title="Swap stations" onclick="swapStations('place1', 'place2')">
+                <i class="fas fa-exchange-alt"></i>
+            </button>
+            
+            <div class="station-select-wrapper">
+                <label for="place2">To Station</label>
+                <select id="place2" name="place2" required>
+                    <option value="">Select Station</option>
+                    <option value="Central Metro">Central Metro</option>
+                    <option value="Thousand Light Metro">Thousand Light Metro</option>
+                    <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+                    <option value="Airport Metro">Airport Metro</option>
+                    <option value="Saidepet Metro">Saidepet Metro</option>
+                    <option value="Washermenpet Metro">Washermenpet Metro</option>
+                </select>
+            </div>
+        </div>
+        
+        Journey Date
+        <input type="date" id="dates" name="dates" value="{{dates}}""> 
+        <input type="button" onclick="check()" id="chec" value="Check Availability">
+
+        Gender
+        <div class="gender-container">
+            <input type="radio" id="male" name="gender" value="Male">
+            <label for="male">Male</label>
+        
+            <input type="radio" id="female" name="gender" value="Female">
+            <label for="female">Female</label>
+        
+            <input type="radio" id="transgender" name="gender" value="Transgender">
+            <label for="transgender">Transgender</label>
+        </div>
+        
+        Mobile No
+        <input type="text" id="phone" name="phone" pattern="[7-9]{1}[0-9]{9}" maxlength="10" placeholder="Enter the Phone Number" value="{{phone}}">
+
+        Email ID
+        <input type="email" id="emailid" name="emailid" placeholder="Enter the Email ID" value="{{email}}" readonly>
+
+        Amount
+        <div id="amdiv" name="amdiv"></div>
+        <input type="hidden" id="amounts" name="amounts" > 
+
+        Photo
+        <div style="display: flex; align-items: center; gap: 13px;">
+            
+            <a href="{{url_for('image')}}" id="camera" target="_blank" style="display: inline-flex; align-items: center;">
+                <i class="bi bi-camera-fill" style="font-size: 1.5rem;"></i>
+            </a>
+            <p style="margin: 0;">Click it to take a Picture</p>
+        </div>
+
+        <button id="book" type="submit" name="submit" >BOOK</button>
+    </form>
+    </div>
+    <div id="alerts">
+        {% if error %}
+        <div id="popupoverly"></div>
+        <div id="popup">
+            <h3>{{ error }}</h3>
+            <button type="button" id="okbut">OK</button>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div id="al">
+        <div id="popupover"></div>
+        <div id="pop">
+            <h2>All fields are required...</h2>
+            <h4></h4>
+            <button type="button" id="okbutton">OK</button>
+        </div>
+    </div>
+    
+<div id="Season" style="display: none;">
+    <h1>Season Pass Booking</h1>
+    <form action="{{ url_for('sespass') }} " method="post" >
+        Name <input type="text" id="uname" name="uname" placeholder="Enter the Name of the Customer" value="{{uname}}" required>
+        
+        <div class="station-select-container">
+            <div class="station-select-wrapper">
+                <label for="from_station">From Station</label>
+                <select id="from_station" name="from_station" required>
+                    <option value="">Select Station</option>
+                    <option value="Central Metro">Central Metro</option>
+                    <option value="Thousand Light Metro">Thousand Light Metro</option>
+                    <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+                    <option value="Airport Metro">Airport Metro</option>
+                    <option value="Saidepet Metro">Saidepet Metro</option>
+                    <option value="Washermenpet Metro">Washermenpet Metro</option>
+                </select>
+            </div>
+            
+            <button type="button" class="swap-stations-btn" title="Swap stations" onclick="swapStations('from_station', 'to_station')">
+                <i class="fas fa-exchange-alt"></i>
+            </button>
+            
+            <div class="station-select-wrapper">
+                <label for="to_station">To Station</label>
+                <select id="to_station" name="to_station" required>
+                    <option value="">Select Station</option>
+                    <option value="Central Metro">Central Metro</option>
+                    <option value="Thousand Light Metro">Thousand Light Metro</option>
+                    <option value="Meenambakkam Metro">Meenambakkam Metro</option>
+                    <option value="Airport Metro">Airport Metro</option>
+                    <option value="Saidepet Metro">Saidepet Metro</option>
+                    <option value="Washermenpet Metro">Washermenpet Metro</option>
+                </select>
+            </div>
+        </div>
+    
+        <label for="start-date">Select Start Date</label>
+        <input type="date" id="start-date" name="start-date" required>
+        <div class="date-note">Book your pass for any date between tomorrow and 5 days from now</div>
+        <input type="hidden" id="end-date" name="end-date">
+        <input type="button" id="verif" onclick="verify()" value="Check Availability">
+
+        Gender
+        <div class="gender-container1">
+            <input type="radio" id="male1" name="gender" value="Male">
+            <label for="male1">Male</label>
+        
+            <input type="radio" id="female1" name="gender" value="Female">
+            <label for="female1">Female</label>
+        
+            <input type="radio" id="transgender1" name="gender" value="Transgender">
+            <label for="transgender1">Transgender</label>
+        </div>
+        
+
+        Mobile No
+        <input type="text" id="phone" name="phone" pattern="[7-9]{1}[0-9]{9}" maxlength="10" placeholder="Enter the Phone Number" value="{{phone}}">
+
+        Email ID
+        <input type="email" id="emailid" name="emailid" placeholder="Enter the Email ID" value="{{email}}" readonly>
+
+        Amount
+        <div id="amdiv2" name="amdiv2"></div>
+        <input type="hidden" id="amounts1" name="amounts1" > 
+
+        Photo
+        <div style="display: flex; align-items: center; gap: 13px;">
+            <a href="{{url_for('image')}}" id="camera" target="_blank" style="display: inline-flex; align-items: center;">
+                <i class="bi bi-camera-fill" style="font-size: 1.5rem;"></i>
+            </a>
+            <p style="margin: 0;">Click it to take a Picture</p>
+        </div>
+
+        <button id="book-btn">Book Season Pass</button>
+    </form>
+</div>
+
+<script>
+    // Function to swap station values
+    function swapStations(fromId, toId) {
+        const fromSelect = document.getElementById(fromId);
+        const toSelect = document.getElementById(toId);
+        
+        // Store the current values
+        const fromValue = fromSelect.value;
+        const toValue = toSelect.value;
+        
+        // Swap the values
+        fromSelect.value = toValue;
+        toSelect.value = fromValue;
+    }
+
+    window.onload = function () {
+        const dateInput = document.getElementById("dates");
+        const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+        dateInput.min = today; // Set min attribute to today's date
+    };
+
+    // Main function to check train availability
+    function check() {
+        const v1 = document.getElementById("place1").value;
+        const v2 = document.getElementById("place2").value;
+        const amdiv = document.getElementById("amdiv");
+        const amounts = document.getElementById("amounts");
+        const checkBtn = document.getElementById("chec");
+
+        // Validation checks
+        if (v1 === "" || v2 === "") {
+            showPopup("Please select both starting and destination places");
+            return;
+        }
+        
+        if (v1 === v2) {
+            showPopup("Starting and destination places cannot be the same");
+            return;
+        }
+
+        // Route configuration with prices and train numbers
+        const routes  = {
+                // Washermenpet Metro connections
+                "Washermenpet Metro-Central Metro": { price: 60 },
+                "Central Metro-Washermenpet Metro": { price: 60 },
+
+                "Washermenpet Metro-Thousand Light Metro": { price: 100 },
+                "Thousand Light Metro-Washermenpet Metro": { price: 100 },
+                
+                "Washermenpet Metro-Meenambakkam Metro": { price: 140 },
+                "Meenambakkam Metro-Washermenpet Metro": { price: 140 },
+
+                "Washermenpet Metro-Airport Metro": { price: 170 },
+                "Airport Metro-Washermenpet Metro": { price: 170 },
+
+                "Washermenpet Metro-Saidepet Metro": { price: 110 },
+                "Saidepet Metro-Washermenpet Metro": { price: 110 },
+
+                // Central Metro connections
+                "Central Metro-Thousand Light Metro": { price: 50 },
+                "Thousand Light Metro-Central Metro": { price: 50 },
+
+                "Central Metro-Meenambakkam Metro": { price: 90 },
+                "Meenambakkam Metro-Central Metro": { price: 90 },
+
+                "Central Metro-Airport Metro": { price: 120 },
+                "Airport Metro-Central Metro": { price: 120 },
+
+                "Central Metro-Saidepet Metro": { price: 80 },
+                "Saidepet Metro-Central Metro": { price: 80 },
+
+                // Thousand Light Metro connections
+                "Thousand Light Metro-Meenambakkam Metro": { price: 80 },
+                "Meenambakkam Metro-Thousand Light Metro": { price: 80 },
+
+                "Thousand Light Metro-Airport Metro": { price: 110 },
+                "Airport Metro-Thousand Light Metro": { price: 110 },
+
+                "Thousand Light Metro-Saidepet Metro": { price: 60 },
+                "Saidepet Metro-Thousand Light Metro": { price: 60 },
+
+                // Meenambakkam Metro connections
+                "Meenambakkam Metro-Airport Metro": { price: 30 },
+                "Airport Metro-Meenambakkam Metro": { price: 30 },
+
+                "Meenambakkam Metro-Saidepet Metro": { price: 50 },
+                "Saidepet Metro-Meenambakkam Metro": { price: 50 },
+
+                // Airport Metro connections
+                "Airport Metro-Saidepet Metro": { price: 70 },
+                "Saidepet Metro-Airport Metro": { price: 70 }
+            };
+
+        const routeKey = `${v1}-${v2}`;
+        
+        if (routes[routeKey]) {
+            const route = routes[routeKey];
+            
+            amdiv.textContent = `₹ ${route.price}`;
+            amounts.value = route.price;
+
+            checkBtn.value = "Trains Found!";
+            checkBtn.style.backgroundColor = "#4CAF50"; // Green color for success
+
+        } else {
+            showPopup("No direct train available for this route");
+            checkBtn.value = "No Trains Found!";
+            checkBtn.style.backgroundColor = "#f44336"; // Red color for error
+        }
+    }
+
+    function verify(){
+        const v3 = document.getElementById("from_station").value;
+        const v4 = document.getElementById("to_station").value;
+        const amdiv = document.getElementById("amdiv2");
+        const amounts = document.getElementById("amounts1");
+        const checkBtn = document.getElementById("verif");
+
+        // Validation checks
+        if (v3 === "" || v4 === "") {
+            showPopup("Please select both starting and destination places");
+            return;
+        }
+        
+        if (v3 === v4) {
+            showPopup("Starting and destination places cannot be the same");
+            return;
+        }
+
+        // Route configuration with prices and train numbers
+        const metroRoutes = {
+                    // Washermenpet Metro connections
+                    "Washermenpet Metro-Central Metro": { monthlyPass: 60 * 30 },
+                    "Central Metro-Washermenpet Metro": { monthlyPass: 60 * 30 },
+
+                    "Washermenpet Metro-Thousand Light Metro": { monthlyPass: 100 * 30 },
+                    "Thousand Light Metro-Washermenpet Metro": { monthlyPass: 100 * 30 },
+
+                    "Washermenpet Metro-Meenambakkam Metro": { monthlyPass: 140 * 30 },
+                    "Meenambakkam Metro-Washermenpet Metro": { monthlyPass: 140 * 30 },
+
+                    "Washermenpet Metro-Airport Metro": { monthlyPass: 170 * 30 },
+                    "Airport Metro-Washermenpet Metro": { monthlyPass: 170 * 30 },
+
+                    "Washermenpet Metro-Saidepet Metro": { monthlyPass: 110 * 30 },
+                    "Saidepet Metro-Washermenpet Metro": { monthlyPass: 110 * 30 },
+
+                    // Central Metro connections
+                    "Central Metro-Thousand Light Metro": { monthlyPass: 50 * 30 },
+                    "Thousand Light Metro-Central Metro": { monthlyPass: 50 * 30 },
+
+                    "Central Metro-Meenambakkam Metro": { monthlyPass: 90 * 30 },
+                    "Meenambakkam Metro-Central Metro": { monthlyPass: 90 * 30 },
+
+                    "Central Metro-Airport Metro": { monthlyPass: 120 * 30 },
+                    "Airport Metro-Central Metro": { monthlyPass: 120 * 30 },
+
+                    "Central Metro-Saidepet Metro": { monthlyPass: 80 * 30 },
+                    "Saidepet Metro-Central Metro": { monthlyPass: 80 * 30 },
+
+                    // Thousand Light Metro connections
+                    "Thousand Light Metro-Meenambakkam Metro": { monthlyPass: 80 * 30 },
+                    "Meenambakkam Metro-Thousand Light Metro": { monthlyPass: 80 * 30 },
+
+                    "Thousand Light Metro-Airport Metro": { monthlyPass: 110 * 30 },
+                    "Airport Metro-Thousand Light Metro": { monthlyPass: 110 * 30 },
+
+                    "Thousand Light Metro-Saidepet Metro": { monthlyPass: 60 * 30 },
+                    "Saidepet Metro-Thousand Light Metro": { monthlyPass: 60 * 30 },
+
+                    // Meenambakkam Metro connections
+                    "Meenambakkam Metro-Airport Metro": { monthlyPass: 30 * 30 },
+                    "Airport Metro-Meenambakkam Metro": { monthlyPass: 30 * 30 },
+
+                    "Meenambakkam Metro-Saidepet Metro": { monthlyPass: 50 * 30 },
+                    "Saidepet Metro-Meenambakkam Metro": { monthlyPass: 50 * 30 },
+
+                    // Airport Metro connections
+                    "Airport Metro-Saidepet Metro": { monthlyPass: 70 * 30 },
+                    "Saidepet Metro-Airport Metro": { monthlyPass: 70 * 30 }
+                };
+
+        const route = `${v3}-${v4}`;
+        
+        if (metroRoutes[route]) {
+            const rout = metroRoutes[route];
+            
+            amdiv.textContent = `₹ ${rout.monthlyPass}`;
+            amounts.value = rout.monthlyPass;
+    
+            checkBtn.value = "Trains Found!";
+            checkBtn.style.backgroundColor = "#4CAF50"; // Green color for success
+
+        } else {
+            showPopup("No direct train available for this route");
+            checkBtn.value = "No Trains Found!";
+            checkBtn.style.backgroundColor = "#f44336"; // Red color for error
+        }
+    }
+
+    // Function to show popup with message
+    function showPopup(message) {
+        const popupOverlay = document.getElementById('popupover');
+        const popup = document.getElementById('pop');
+        const popupMessage = popup.querySelector('h4');
+        
+        popupMessage.textContent = message;
+        
+        // Show elements first
+        popupOverlay.style.display = 'block';
+        popup.style.display = 'block';
+        
+        // Then animate them in
+        setTimeout(() => {
+            popupOverlay.classList.add('show');
+            popup.classList.add('show');
+            popup.classList.add('error-shake');
+        }, 10);
+    }
+
+    // Initialize popups on DOM load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle the server-side error popup if it exists
+        const errorPopup = document.getElementById('popup');
+        if (errorPopup) {
+            const errorOverlay = document.getElementById('popupoverly');
+            
+            errorOverlay.style.display = 'block';
+            errorPopup.style.display = 'block';
+            
+            setTimeout(() => {
+                errorOverlay.classList.add('show');
+                errorPopup.classList.add('show');
+                errorPopup.classList.add('error-shake');
+            }, 100);
+            
+            document.getElementById('okbut').addEventListener('click', function() {
+                errorOverlay.classList.remove('show');
+                errorPopup.classList.remove('show');
+                setTimeout(() => {
+                    errorOverlay.style.display = 'none';
+                    errorPopup.style.display = 'none';
+                }, 300);
+            });
+        }
+        
+        // Handle the JS-created popup
+        const okButton = document.getElementById('okbutton');
+        if (okButton) {
+            okButton.addEventListener('click', function() {
+                document.getElementById('popupover').classList.remove('show');
+                document.getElementById('pop').classList.remove('show');
+                setTimeout(() => {
+                    document.getElementById('popupover').style.display = 'none';
+                    document.getElementById('pop').style.display = 'none';
+                }, 300);
+            });
+        }
+
+        // Form validation before submission
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                // Validate required fields
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value) {
+                        isValid = false;
+                        // Highlight the empty field
+                        field.style.borderColor = "#f44336";
+                        field.style.boxShadow = "0 0 5px #f44336";
+                        
+                        // Remove highlight when user starts typing
+                        field.addEventListener('input', function() {
+                            this.style.borderColor = "";
+                            this.style.boxShadow = "";
+                        });
+                    }
+                });
+                
+                // Validate phone if it exists in this form
+                const phone = form.querySelector('input[type="text"][pattern="[7-9]{1}[0-9]{9}"]');
+                if (phone && !/^[7-9][0-9]{9}$/.test(phone.value)) {
+                    showPopup("Please enter a valid 10-digit mobile number starting with 7, 8, or 9");
+                    e.preventDefault();
+                    return;
+                }
+                
+                // Validate gender if it exists in this form
+                const gender = form.querySelector('input[name="gender"]:checked');
+                if (!gender) {
+                    showPopup("Please select your gender");
+                    e.preventDefault();
+                    return;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    showPopup("Please fill all required fields");
+                }
+            });
+        });
+    });
+
+    const newb = document.getElementById('new');
+    const Season = document.getElementById("Season");
+    const newTicketBtn = document.getElementById('newTicketBtn');
+    const sessionPassBtn = document.getElementById('sessionPassBtn');
+
+    function sessionpage(){
+        Season.style.display = "block";
+        newb.style.display = "none";
+        newTicketBtn.classList.remove('active');
+        newTicketBtn.classList.add('inactive');
+        sessionPassBtn.classList.remove('inactive');
+        sessionPassBtn.classList.add('active');
+    }
+
+    function newticket(){
+        newb.style.display = "block";
+        Season.style.display = "none";
+        newTicketBtn.classList.remove('inactive');
+        newTicketBtn.classList.add('active');
+        sessionPassBtn.classList.remove('active');
+        sessionPassBtn.classList.add('inactive');
+    }
+
+    // Set date constraints (tomorrow to 5 days from today)
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 5);
+
+    // Format as YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Format display date as "15 Jan"
+    function formatDisplayDate(date) {
+        return date.toLocaleDateString('en-IN', { 
+            day: 'numeric', 
+            month: 'short' 
+        });
+    }
+
+    // Calculate and display end date when start date changes
+    function updateEndDate() {
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        
+        if (startDateInput.value) {
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 30); // 30-day pass
+            
+            endDateInput.value = formatDate(endDate); // Store the full date in hidden input
+        }
+    }
+
+    // Initialize date input
+    const dateInput = document.getElementById('start-date');
+    if (dateInput) {
+        dateInput.min = formatDate(tomorrow);
+        dateInput.max = formatDate(maxDate);
+        dateInput.value = formatDate(tomorrow); // Default to tomorrow
+
+        // Add event listener for date changes
+        dateInput.addEventListener('change', updateEndDate);
+
+        // Initialize end date display
+        updateEndDate();
+    }
+</script>
+</body>
+</html>

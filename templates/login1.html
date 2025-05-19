@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Login Page</title>
+    <style>
+        :root {
+            --primary-500: #6366f1;
+            --primary-600: #4f46e5;
+            --primary-700: #4338ca;
+            --accent-400: #60a5fa;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --rounded-lg: 0.5rem;
+            --rounded-xl: 0.75rem;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+            color: var(--gray-900);
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--rounded-xl);
+            width: 100%;
+            max-width: 28rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            position: relative;
+            transform: translateY(0);
+            transition: var(--transition);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: rotate 15s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-700);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .login-header p {
+            color: var(--gray-700);
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.75rem;
+            font-size: 0.9375rem;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--rounded-lg);
+            background-color: var(--gray-50);
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            background-color: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 3.50rem;
+            transform: translateY(-50%);
+            color: var(--primary-500);
+            font-size: 1.1rem;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--primary-600);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--rounded-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-700);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .links-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .link {
+            color: var(--primary-600);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .link:hover {
+            color: var(--primary-700);
+            text-decoration: underline;
+        }
+
+        .link i {
+            font-size: 0.75rem;
+        }
+
+        /* Alerts */
+        #alerts {
+            width: 100%;
+            max-width: 28rem;
+            margin-top: 1rem;
+        }
+
+        .alert {
+            border-radius: var(--rounded-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .login-card {
+                padding: 1.75rem;
+            }
+            
+            .links-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to access your account</p>
+        </div>
+        
+        <form method="post">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="you@example.com" required>
+                <i class="bi bi-envelope-fill input-icon"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
+                <i class="bi bi-lock-fill input-icon"></i>
+            </div>
+            
+            <button type="submit" class="btn-login">
+                <i class="bi bi-box-arrow-in-right"></i> Sign In
+            </button>
+            
+            <div class="login-footer">
+                <div class="links-container">
+                    <a href="{{ url_for('mainpage') }}" class="link">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+                    <a href="{{ url_for('forgot_password') }}" class="link">
+                        <i class="bi bi-question-circle"></i> Forgot Password?
+                    </a>
+                    <a href="{{ url_for('register') }}" class="link">
+                        <i class="bi bi-person-plus"></i> Create Account
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div id="alerts">
+        {% if error %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ error }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('bi-eye-slash-fill');
+        });
+
+        // Add animation to form elements on load
+        document.querySelectorAll('.form-group').forEach((el, i) => {
+            el.style.animationDelay = `${i * 100}ms`;
+            el.classList.add('animate__animated', 'animate__fadeInUp');
+        });
+    </script>
+</body>
+</html>
